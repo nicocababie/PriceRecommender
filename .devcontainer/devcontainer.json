@@ -1,0 +1,34 @@
+{
+    "name": "Node.js & TypeScript & React",
+    "build": {
+      "dockerfile": "Dockerfile",
+      "args": {
+        "VARIANT": "18"
+      }
+    },
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "dbaeumer.vscode-eslint",
+          "esbenp.prettier-vscode",
+          "ms-vscode.vscode-typescript-next",
+          "dsznajder.es7-react-js-snippets",
+          "steoates.autoimport",
+          "GitHub.copilot",
+          "PKief.material-icon-theme",
+          "yzhang.markdown-all-in-one",
+          "hashicorp.terraform"
+        ]
+      }
+    },
+    "settings": {
+      "terminal.integrated.defaultProfile.linux": "bash"
+    },
+    "remoteUser": "root",
+    "runArgs": [
+      "--volume=/var/run/docker.sock:/var/run/docker.sock",
+      "--mount=type=bind,source=C:\\Users\\naist\\.aws\\credentials,target=/root/.aws/credentials"
+    ],
+    "postCreateCommand": "apk add --no-cache docker-cli-compose aws-cli"
+  }
+  

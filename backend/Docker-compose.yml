@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7.24
+    container_name: mysql
+    volumes:
+      - obl-mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_USER: local
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: todos
+      MYSQL_ROOT_HOST: '%'
+    networks:
+      - obligatorio-ihc
+  app:
+    build: .
+    container_name: ihc-app
+    ports:
+      - "3000:3000"
+    networks:
+      - obligatorio-ihc
+    depends_on:
+      - mysql
+
+networks:
+  obligatorio-ihc:
+    driver: bridge
+
+volumes:
+  obl-mysql-data:

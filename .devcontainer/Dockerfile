@@ -22,7 +22,7 @@ RUN npm config set prefix /home/node/.npm-global
 ENV PATH=/home/node/.npm-global/bin:$PATH
 
 # Copiar package.json y package-lock.json (si existe)
-COPY --chown=node:node package*.json /workspaces/Obligatorio_273470_203656_267553/
+COPY --chown=node:node package*.json /workspaces/273470_203656_267553/
 
 # Instalar paquetes globales
 RUN npm install -g typescript eslint --unsafe-perm

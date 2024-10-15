@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "esModuleInterop": true,
+      "target": "ES6",                        // Versión de ECMAScript a la que se compilará el código
+      "module": "commonjs",                   // Sistema de módulos
+      "outDir": "./dist",                     // Directorio de salida para los archivos compilados
+      "rootDir": "./src",                     // Directorio raíz de tu código fuente TypeScript
+    },
+    "include": [
+      "src/**/*.ts"                           // Incluye todos los archivos TypeScript en el directorio src
+    ],
+    "exclude": [
+      "node_modules",                         // Excluye el directorio node_modules
+      "dist"                                  // Excluye el directorio dist
+    ]
+  }

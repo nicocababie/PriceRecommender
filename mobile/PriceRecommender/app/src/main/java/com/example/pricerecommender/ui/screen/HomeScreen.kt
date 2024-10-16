@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,15 +45,24 @@ fun HomeScreen(
             cartButtonRef,
             bestRouteButtonRef,
             addPurchaseButtonRef,
-            savingsReportButtonRef
+            savingsReportButtonRef,
+            addressButtonRef
         ) = createRefs()
+
+        AddressInput(
+            modifier = Modifier.constrainAs(addressButtonRef) {
+                top.linkTo(parent.top, 8.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        )
 
         CustomButton(
             onClick = onCheckBestRouteClick,
             icon = Icons.Default.CheckCircle,
             text = stringResource(R.string.check_the_best_route),
             modifier = Modifier.constrainAs(bestRouteButtonRef) {
-                top.linkTo(parent.top, 16.dp)
+                top.linkTo(addressButtonRef.bottom, 48.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }
@@ -89,12 +100,12 @@ fun HomeScreen(
                     shape = RoundedCornerShape(160.dp)
                 )
                 .constrainAs(cartButtonRef) {
-                    top.linkTo(savingsReportButtonRef.bottom, 380.dp)
+                    top.linkTo(savingsReportButtonRef.bottom, 280.dp)
                 }
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter // Alinea la columna en la parte superior
+                contentAlignment = Alignment.TopCenter
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -135,6 +146,30 @@ fun CustomButton(
             Icon(imageVector = icon, contentDescription = text)
             Text(text = text)
         }
+    }
+}
+
+@Composable
+fun AddressInput(
+    modifier: Modifier = Modifier
+) {
+    OutlinedButton(
+        onClick = { /*TODO*/ },
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = stringResource(R.string.address)
+        )
+        Text(text = stringResource(R.string.address))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AddressInputPreview() {
+    PriceRecommenderTheme {
+        AddressInput()
     }
 }
 

@@ -3,8 +3,9 @@
     <string name="home_screen">Home Screen</string>
     <string name="cart_screen">Cart Screen</string>
     <string name="navigate_back">Navigate back</string>
-    <string name="check_the_best_route">Check the best route</string>
-    <string name="add_purchase">Add Purchase</string>
-    <string name="savings_report">Savings Report</string>
+    <string name="check_the_best_route">Check best route</string>
+    <string name="add_purchase">Add purchase</string>
+    <string name="savings_report">Savings report</string>
     <string name="create_shopping_list">Create shopping list</string>
+    <string name="address">Address</string>
 </resources>

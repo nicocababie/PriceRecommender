@@ -4,7 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,8 +30,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.example.pricerecommender.R
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
@@ -38,70 +40,47 @@ fun HomeScreen(
     onSavingsReportClick: () -> Unit,
     onCartClick: () -> Unit
 ) {
-    ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val (
-            cartButtonRef,
-            bestRouteButtonRef,
-            addPurchaseButtonRef,
-            savingsReportButtonRef,
-            addressButtonRef
-        ) = createRefs()
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            AddressInput(modifier = Modifier.padding(vertical = 12.dp))
 
-        AddressInput(
-            modifier = Modifier.constrainAs(addressButtonRef) {
-                top.linkTo(parent.top, 8.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        )
+            Spacer(modifier = Modifier.padding(vertical = 24.dp))
 
-        CustomButton(
-            onClick = onCheckBestRouteClick,
-            icon = Icons.Default.CheckCircle,
-            text = stringResource(R.string.check_the_best_route),
-            modifier = Modifier.constrainAs(bestRouteButtonRef) {
-                top.linkTo(addressButtonRef.bottom, 48.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        )
+            CustomButton(
+                onClick = onCheckBestRouteClick,
+                icon = Icons.Default.CheckCircle,
+                text = stringResource(R.string.check_the_best_route),
+            )
 
-        CustomButton(
-            onClick = onAddPurchaseClick,
-            icon = Icons.Default.AddCircle,
-            text = stringResource(R.string.add_purchase),
-            modifier = Modifier.constrainAs(addPurchaseButtonRef) {
-                top.linkTo(bestRouteButtonRef.bottom, 8.dp)
-                start.linkTo(bestRouteButtonRef.start)
-                end.linkTo(bestRouteButtonRef.end)
-                width = Dimension.fillToConstraints
-            }
-        )
+            CustomButton(
+                onClick = onAddPurchaseClick,
+                icon = Icons.Default.AddCircle,
+                text = stringResource(R.string.add_purchase)
+            )
 
-        CustomButton(
-            onClick = onSavingsReportClick,
-            icon = Icons.Default.Info,
-            text = stringResource(R.string.savings_report),
-            modifier = Modifier.constrainAs(savingsReportButtonRef) {
-                top.linkTo(addPurchaseButtonRef.bottom, 8.dp)
-                start.linkTo(bestRouteButtonRef.start)
-                end.linkTo(bestRouteButtonRef.end)
-                width = Dimension.fillToConstraints
-            }
-        )
-
+            CustomButton(
+                onClick = onSavingsReportClick,
+                icon = Icons.Default.Info,
+                text = stringResource(R.string.savings_report)
+            )
+        }
         Button(
             onClick = onCartClick,
             modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
                 .background(
                     MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(160.dp)
-                )
-                .constrainAs(cartButtonRef) {
-                    top.linkTo(savingsReportButtonRef.bottom, 280.dp)
-                }
+                    shape = RoundedCornerShape(topStart = 160.dp, topEnd = 160.dp)
+                ),
+            shape = RoundedCornerShape(topStart = 160.dp, topEnd = 160.dp)
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -124,24 +103,25 @@ fun HomeScreen(
                 }
             }
         }
-
     }
 }
 
 @Composable
 fun CustomButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     icon: ImageVector,
     text: String
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
+        modifier = Modifier
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(6.dp)
+                .fillMaxWidth(0.5f)
         ) {
             Icon(imageVector = icon, contentDescription = text)
             Text(text = text)
@@ -155,7 +135,7 @@ fun AddressInput(
 ) {
     OutlinedButton(
         onClick = { /*TODO*/ },
-        modifier = modifier
+        modifier = modifier.fillMaxWidth(0.4f)
     ) {
         Icon(
             imageVector = Icons.Default.Add,

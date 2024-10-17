@@ -17,7 +17,7 @@ export const Cart = sequelize.define("Cart", {
         allowNull: false
     },
     productAmount: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.FLOAT,
         allowNull: false
     },
     productBrand: {

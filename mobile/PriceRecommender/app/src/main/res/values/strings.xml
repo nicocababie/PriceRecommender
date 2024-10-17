@@ -8,4 +8,9 @@
     <string name="savings_report">Savings report</string>
     <string name="create_shopping_list">Create shopping list</string>
     <string name="address">Address</string>
+    <string name="add_address">Add address</string>
+    <string name="google_maps">Google Maps</string>
+    <string name="manual_entry">Manual entry</string>
+    <string name="back_button">Back button</string>
+    <string name="show_addresses">Show addresses</string>
 </resources>

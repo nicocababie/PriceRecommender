@@ -9,6 +9,11 @@ import { cartDataAccess } from './dataAccess/cartDataAccess';
 import { IcartService } from './serviceInterface/IcartService';
 import cartService from './service/cartService';
 import cartController from './controller/cartController';
+import IpurchaseDataAccess from './dataAccessInterface/IpurchaseDataAccess';
+import { PurchaseDataAccess } from './dataAccess/purchaseDataAccess';
+import { IpurchaseService } from './serviceInterface/IpurchaseService';
+import { purchaseService } from './service/purchaseService';
+import purchaseController from './controller/purchaseController';
 
 dotenv.config();
 
@@ -18,14 +23,17 @@ let PORT = parseInt(process.env.PORT as string) || 4000;
 
 let container = new Container();
 
-
-
-
 container.bind<IcartDataAccess>('IcartDataAccess').to(cartDataAccess);
 let _cartDataAccess = container.get<IcartDataAccess>('IcartDataAccess');
 container.bind<IcartService>('IcartService').to(cartService);
 let _cartService = container.get<IcartService>('IcartService');
 let _cartController = new cartController(_cartService);
+
+container.bind<IpurchaseDataAccess>('IpurchaseDataAccess').to(PurchaseDataAccess);
+let _purchaseDataAccess = container.get<IpurchaseDataAccess>('IpurchaseDataAccess');
+container.bind<IpurchaseService>('IpurchaseService').to(purchaseService);
+let _purchaseService = container.get<IpurchaseService>('IpurchaseService');
+let _purchaseController = new purchaseController(_purchaseService);
 
 let cors = require('cors');
 app.use(express.json());
@@ -39,6 +47,10 @@ app.use(cors({
 app.put('/carts/:id', async (req, res) => {await _cartController.overwriteCart(req, res)});
 app.post('/carts/:id', async (req, res) => {await _cartController.addToCart(req, res)});
 app.post('/carts/:id', async (req, res) => {await _cartController.addToNewCart(req, res)});
+
+app.post('/purchases', async (req, res) => {await _purchaseController.createPurchase(req, res)});
+app.get('/purchases/:id', async (req, res) => {await _purchaseController.getPurchase(req, res)});
+
 app.listen(PORT, '0.0.0.0', async () => {
   console.log(`IHC backend running on port ${PORT}`);
   try {

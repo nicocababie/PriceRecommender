@@ -28,14 +28,34 @@ class PreferencesRepository @Inject constructor(
             storage[USER_ADDRESS] ?: ""
         }
 
+    val userRange: Flow<String> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading user range", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { storage ->
+            storage[USER_RANGE] ?: ""
+        }
+
     private companion object {
         val USER_ADDRESS = stringPreferencesKey("user_address")
+        val USER_RANGE = stringPreferencesKey("user_range")
         const val TAG = "PreferencesRepository"
     }
 
     suspend fun saveUserAddress(text: String) {
         dataStore.edit { storage ->
             storage[USER_ADDRESS] = text
+        }
+    }
+
+    suspend fun saveUserRange(range: Float) {
+        dataStore.edit { storage ->
+            storage[USER_RANGE] = range.toString()
         }
     }
 }

@@ -13,4 +13,5 @@
     <string name="manual_entry">Manual entry</string>
     <string name="back_button">Back button</string>
     <string name="show_addresses">Show addresses</string>
+    <string name="range">Range</string>
 </resources>

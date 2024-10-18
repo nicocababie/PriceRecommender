@@ -60,6 +60,7 @@ fun PriceRecommenderApp(
         ) {
             composable(route = PriceRecommenderScreen.HomeScreen.name) {
                 HomeScreen(
+                    state.currentRange,
                     state.currentAddress,
                     state.addresses,
                     onAddAddressClick = { navController.navigate(PriceRecommenderScreen.AddAddressScreen.name) },
@@ -68,7 +69,8 @@ fun PriceRecommenderApp(
                     onCheckBestRouteClick = { navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name) },
                     onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) },
                     onSavingsReportClick = { navController.navigate(PriceRecommenderScreen.SavingsReportScreen.name) },
-                    onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) }
+                    onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) },
+                    onRangeSelected = { viewModel.updateCurrentRange(it) }
                 )
             }
 

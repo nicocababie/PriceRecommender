@@ -22,6 +22,7 @@ class PriceRecommenderViewModel @Inject constructor(
 
     init {
         getCurrentAddress()
+        getCurrentRange()
         getAllAddresses()
     }
 
@@ -32,18 +33,6 @@ class PriceRecommenderViewModel @Inject constructor(
             )
         }
         saveCurrentAddress(address)
-    }
-
-    private fun getAllAddresses() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    addresses = addressRepository.getAllAddresses().map {
-                        it.address
-                    }
-                )
-            }
-        }
     }
 
     fun insertAddress(address: String) {
@@ -80,19 +69,59 @@ class PriceRecommenderViewModel @Inject constructor(
         }
     }
 
+    fun updateCurrentRange(range: Float) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentRange = range
+            )
+        }
+        saveCurrentRange(range)
+    }
+
+    private fun getAllAddresses() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    addresses = addressRepository.getAllAddresses().map {
+                        it.address
+                    }
+                )
+            }
+        }
+    }
+
     private fun saveCurrentAddress(currentAddress: String) {
         viewModelScope.launch {
             preferencesRepository.saveUserAddress(currentAddress)
         }
     }
 
-    private fun getCurrentAddress(){
+    private fun getCurrentAddress() {
         viewModelScope.launch {
             preferencesRepository.userAddress
                 .collect { savedAddress ->
                     _uiState.update { currentState ->
                         currentState.copy(
                             currentAddress = savedAddress
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun saveCurrentRange(currentRange: Float) {
+        viewModelScope.launch {
+            preferencesRepository.saveUserRange(currentRange)
+        }
+    }
+
+    private fun getCurrentRange() {
+        viewModelScope.launch {
+            preferencesRepository.userRange
+                .collect { savedRange ->
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            currentRange = savedRange.toFloat()
                         )
                     }
                 }

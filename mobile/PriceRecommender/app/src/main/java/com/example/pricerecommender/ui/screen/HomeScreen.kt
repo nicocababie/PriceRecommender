@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -27,6 +28,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,6 +47,7 @@ import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun HomeScreen(
+    currentRange: Float,
     currentAddress: String,
     addresses: List<String>,
     onAddAddressClick: () -> Unit,
@@ -53,12 +56,18 @@ fun HomeScreen(
     onCheckBestRouteClick: () -> Unit,
     onAddPurchaseClick: () -> Unit,
     onSavingsReportClick: () -> Unit,
-    onCartClick: () -> Unit
+    onCartClick: () -> Unit,
+    onRangeSelected: (Float) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
+        RangeInput(
+            currentRange,
+            onRangeSelected
+        )
+
         AddressInput(
             currentAddress = currentAddress,
             addresses = addresses,
@@ -153,6 +162,47 @@ fun CustomButton(
 }
 
 @Composable
+fun RangeInput(
+    currentRange: Float,
+    onRangeSelected: (Float) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = "${stringResource(R.string.range)} (${currentRange.toInt()} km)"
+        )
+
+        Slider(
+            value = currentRange,
+            onValueChange = { onRangeSelected(it) },
+            valueRange = 0f..100f,
+            modifier = Modifier.width(200.dp)
+        )
+    }
+}
+
+@Composable
+fun OutlinedTransparentButton(
+    text: Int,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(0.4f)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(text)
+        )
+        Text(text = stringResource(text))
+    }
+}
+
+@Composable
 fun AddressInput(
     currentAddress: String,
     addresses: List<String>,
@@ -162,16 +212,12 @@ fun AddressInput(
     modifier: Modifier = Modifier
 ) {
     if (addresses.isEmpty()){
-        OutlinedButton(
+        OutlinedTransparentButton(
+            R.string.address,
+            Icons.Default.Add,
             onClick = onAddAddressClick,
-            modifier = modifier.fillMaxWidth(0.4f)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = stringResource(R.string.address)
-            )
-            Text(text = stringResource(R.string.address))
-        }
+            modifier = modifier
+        )
     } else {
         AddressesList(currentAddress, addresses, onSelectAddress, onDeleteAddress, onAddAddressClick)
     }
@@ -232,9 +278,9 @@ fun AddressesList(
                                 .padding(start = 24.dp)
                                 .weight(1f)
                                 .clickable {
-                                onSelectAddress(it)
-                                expanded = false
-                            }
+                                    onSelectAddress(it)
+                                    expanded = false
+                                }
                         )
                         OutlinedButton(
                             onClick = {
@@ -275,6 +321,12 @@ fun AddressesList(
 @Composable
 fun HomeScreenPreview() {
     PriceRecommenderTheme {
-        HomeScreen("Av. Brasil 3919", listOf("Rivera 1234", "Cuareim 1451"), {}, {}, {}, {}, {}, {}, {})
+        HomeScreen(
+            5f,
+            "Av. Brasil 3919",
+            emptyList(),
+            //listOf("Rivera 1234", "Cuareim 1451"),
+            {}, {}, {}, {}, {}, {}, {}, {}
+        )
     }
 }

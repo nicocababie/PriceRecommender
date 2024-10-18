@@ -14,12 +14,6 @@ import { PurchaseDataAccess } from './dataAccess/purchaseDataAccess';
 import { IpurchaseService } from './serviceInterface/IpurchaseService';
 import { purchaseService } from './service/purchaseService';
 import purchaseController from './controller/purchaseController';
-import { IuserDataAccess } from './dataAccessInterface/IuserDataAccess';
-import { User } from './domain/user';
-import { UserDataAccess } from './dataAccess/userDataAccess';
-import { IuserService } from './serviceInterface/IuserService';
-import { userService } from './service/userService';
-import { userController } from './controller/userController';
 
 dotenv.config();
 
@@ -41,12 +35,6 @@ container.bind<IpurchaseService>('IpurchaseService').to(purchaseService);
 let _purchaseService = container.get<IpurchaseService>('IpurchaseService');
 let _purchaseController = new purchaseController(_purchaseService);
 
-container.bind<IuserDataAccess>('IuserDataAccess').to(UserDataAccess);
-let _userDataAccess = container.get<IuserDataAccess>('IuserDataAccess');
-container.bind<IuserService>('IuserService').to(userService);
-let _userService = container.get<IuserService>('IuserService');
-let _userController = new userController(_userService);
-
 let cors = require('cors');
 app.use(express.json());
 
@@ -63,10 +51,7 @@ app.post('/carts/:id', async (req, res) => {await _cartController.addToNewCart(r
 app.post('/purchases', async (req, res) => {await _purchaseController.createPurchase(req, res)});
 app.get('/purchases/:id', async (req, res) => {await _purchaseController.getPurchase(req, res)});
 
-app.post('/users', async (req, res) => {await _userController.createUser(req, res)});
-app.get('/users/:name', async (req, res) => {await _userController.getUser(req, res)});
-
-  app.listen(PORT, '0.0.0.0', async () => {
+app.listen(PORT, '0.0.0.0', async () => {
   console.log(`IHC backend running on port ${PORT}`);
   try {
     await sequelize.authenticate();

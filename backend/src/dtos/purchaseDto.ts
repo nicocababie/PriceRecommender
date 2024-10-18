@@ -5,4 +5,6 @@ export class purchaseDto {
     storeName: string;
     storeAddress: string;
     listProducts: productDto[];
+    userId: string;
+    date: Date;
 }

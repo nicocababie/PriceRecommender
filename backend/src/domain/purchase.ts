@@ -7,6 +7,8 @@ interface PurchaseAttributes {
     id?: number;
     storeName: string;
     storeAddress: string;
+    userId: string;
+    date: Date;
 }
 
 interface PurchaseCreationAttributes extends Optional<PurchaseAttributes, 'id'> {}
@@ -16,6 +18,8 @@ export class Purchase extends Model<PurchaseAttributes, PurchaseCreationAttribut
     public id!: number;
     public storeName!: string;
     public storeAddress!: string;
+    public userId!: string;
+    public date!: Date;
 
     // Timestamps
     public readonly createdAt!: Date;
@@ -40,7 +44,17 @@ Purchase.init(
         storeAddress: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        userId: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        date: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW // Puedes quitar defaultValue si prefieres
         }
+        
     },
     {
         sequelize,

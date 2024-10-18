@@ -48,6 +48,28 @@ export class purchaseController {
             });
         }
     }
+
+    getLastPurchases = async (req: Request, res: Response) => {
+        try {
+            let userId = req.params.userId;
+            let result = await this._purchaseService.getLastPurchases(userId);
+            if (!result) {
+                return res.status(404).json({
+                    message: "Purchases not found"
+                });
+            }
+
+            res.status(200).json({
+                message: "Purchases retrieved successfully",
+                data: result
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "Error retrieving purchases",
+                error: error.message
+            });
+        }
+    }
 }
 
 export default purchaseController;

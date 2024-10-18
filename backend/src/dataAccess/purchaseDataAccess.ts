@@ -15,7 +15,9 @@ export class PurchaseDataAccess implements IpurchaseDataAccess {
             const purchase = await Purchase.create(
                 {
                     storeName: data.storeName,
-                    storeAddress: data.storeAddress
+                    storeAddress: data.storeAddress,
+                    userId: data.userId,
+                    date: new Date()
                 },
                 { transaction }
             );
@@ -90,10 +92,53 @@ export class PurchaseDataAccess implements IpurchaseDataAccess {
             return {
                 storeName: purchase.storeName,
                 storeAddress: purchase.storeAddress,
-                listProducts
+                listProducts,
+                userId: purchase.userId,
+                date: purchase.date
             };
         } catch (error) {
             throw new Error("Error retrieving purchase: " + error.message);
+        }
+    }
+
+    async getAllPurchases(): Promise<purchaseDto[]> {
+        try {
+            // Incluir productos asociados con el campo 'amount' desde la tabla intermedia
+            const purchases = await Purchase.findAll({
+                include: [
+                    {
+                        model: Product,
+                        as: "products",
+                        through: {
+                            attributes: ["amount"] // No necesitamos especificar 'model' aquí
+                        }
+                    }
+                ]
+            });
+
+            // Mapear las compras a purchaseDto
+            return purchases.map((purchase: any) => {
+                // Usar el método getProducts en lugar de acceder directamente a la propiedad 'products'
+                const products = purchase.getProducts();
+                const listProducts = products.map((product: any) => ({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    brand: product.brand,
+                    store: product.store,
+                    amount: product.PurchaseProduct.amount // Obtener la cantidad desde la tabla intermedia
+                }));
+
+                return {
+                    storeName: purchase.storeName,
+                    storeAddress: purchase.storeAddress,
+                    listProducts,
+                    userId: purchase.userId,
+                    date: purchase.date
+                };
+            });
+        } catch (error) {
+            throw new Error("Error retrieving purchases: " + error.message);
         }
     }
 }

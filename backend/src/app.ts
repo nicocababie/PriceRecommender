@@ -46,11 +46,12 @@ app.use(cors({
 
 app.put('/carts/:id', async (req, res) => {await _cartController.overwriteCart(req, res)});
 app.post('/carts/:id', async (req, res) => {await _cartController.addToCart(req, res)});
-app.post('/carts/:id', async (req, res) => {await _cartController.addToNewCart(req, res)});
+app.post('/carts/', async (req, res) => {await _cartController.addToNewCart(req, res)});
 
 app.post('/purchases', async (req, res) => {await _purchaseController.createPurchase(req, res)});
 app.get('/purchases/:id', async (req, res) => {await _purchaseController.getPurchase(req, res)});
 
+app.post('/api/products/routes/:id', async (req, res) => {await storeController.calculateRoute(req, res)});
 app.listen(PORT, '0.0.0.0', async () => {
   console.log(`IHC backend running on port ${PORT}`);
   try {

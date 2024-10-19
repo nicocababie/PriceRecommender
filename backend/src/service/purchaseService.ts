@@ -21,8 +21,7 @@ export class purchaseService implements IpurchaseService {
     }
 
     getLastPurchases = async (userId: string) => {
-        let result = await this._purchaseDataAccess.getAllPurchases();
-        result = result.filter(purchase => purchase.userId === userId);
+        let result = await this._purchaseDataAccess.getAllPurchases(userId);
         result = result.sort((a, b) => {
             return new Date(b.date).getTime() - new Date(a.date).getTime();
         });

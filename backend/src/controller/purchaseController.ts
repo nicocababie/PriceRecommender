@@ -51,7 +51,7 @@ export class purchaseController {
 
     getLastPurchases = async (req: Request, res: Response) => {
         try {
-            let userId = req.params.userId;
+            let userId = req.params.id;
             let result = await this._purchaseService.getLastPurchases(userId);
             if (!result) {
                 return res.status(404).json({

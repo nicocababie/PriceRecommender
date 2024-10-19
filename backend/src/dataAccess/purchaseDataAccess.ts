@@ -101,10 +101,12 @@ export class PurchaseDataAccess implements IpurchaseDataAccess {
         }
     }
 
-    async getAllPurchases(): Promise<purchaseDto[]> {
+    // method that returns only the purchases some user
+    async getAllPurchases(userId: string): Promise<purchaseDto[]> {
         try {
             // Incluir productos asociados con el campo 'amount' desde la tabla intermedia
             const purchases = await Purchase.findAll({
+                where: { userId },
                 include: [
                     {
                         model: Product,
@@ -115,30 +117,38 @@ export class PurchaseDataAccess implements IpurchaseDataAccess {
                     }
                 ]
             });
-
-            // Mapear las compras a purchaseDto
-            return purchases.map((purchase: any) => {
-                // Usar el método getProducts en lugar de acceder directamente a la propiedad 'products'
-                const products = purchase.getProducts();
-                const listProducts = products.map((product: any) => ({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    brand: product.brand,
-                    store: product.store,
-                    amount: product.PurchaseProduct.amount // Obtener la cantidad desde la tabla intermedia
-                }));
-
-                return {
-                    storeName: purchase.storeName,
-                    storeAddress: purchase.storeAddress,
-                    listProducts,
-                    userId: purchase.userId,
-                    date: purchase.date
-                };
-            });
+    
+            if (!purchases || purchases.length === 0) {
+                throw new Error(`Purchases for user with ID ${userId} not found`);
+            }
+    
+            // Usamos Promise.all para manejar las promesas de getProducts
+            const listPurchases = await Promise.all(
+                purchases.map(async (purchase: any) => {
+                    const products = await purchase.getProducts();  // Esperamos a que se resuelva getProducts
+                    const listProducts = products.map((product: any) => ({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        brand: product.brand,
+                        store: product.store,
+                        amount: product.PurchaseProduct.amount // Obtener la cantidad desde la tabla intermedia
+                    }));
+    
+                    return {
+                        storeName: purchase.storeName,
+                        storeAddress: purchase.storeAddress,
+                        listProducts,
+                        userId: purchase.userId,
+                        date: purchase.date
+                    };
+                })
+            );
+    
+            return listPurchases;
         } catch (error) {
             throw new Error("Error retrieving purchases: " + error.message);
         }
     }
+    
 }

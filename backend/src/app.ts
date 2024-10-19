@@ -59,7 +59,7 @@ app.get('/purchases/:id', async (req, res) => {await _purchaseController.getPurc
 
 app.get('/users', async (req, res) => {await _userController.createUser(req, res)});
 
-app.get('/stats', async (req, res) => { await _purchaseController.getLastPurchases(req, res) });
+app.get('/stats/:id', async (req, res) => { await _purchaseController.getLastPurchases(req, res) });
 
 app.listen(PORT, '0.0.0.0', async () => {
   console.log(`IHC backend running on port ${PORT}`);

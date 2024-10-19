@@ -31,20 +31,24 @@ import com.example.pricerecommender.ui.screen.AddAddressScreen
 import com.example.pricerecommender.ui.screen.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.AddressManualEntryScreen
 import com.example.pricerecommender.ui.screen.CartScreen
-import com.example.pricerecommender.ui.screen.CheckBestRouteScreen
 import com.example.pricerecommender.ui.screen.HomeScreen
 import com.example.pricerecommender.ui.screen.SavingsReportScreen
+import com.example.pricerecommender.ui.screen.bestRoute.BestRouteViewModel
+import com.example.pricerecommender.ui.screen.bestRoute.CheckBestRouteScreen
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 import com.example.pricerecommender.ui.utils.PriceRecommenderScreen
 
 @Composable
 fun PriceRecommenderApp(
-    viewModel: PriceRecommenderViewModel = hiltViewModel()
+    homeScreenViewModel: PriceRecommenderViewModel = hiltViewModel(),
+    bestRouteViewModel: BestRouteViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
-    val state by viewModel.uiState.collectAsState()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val canNavigateBack = backStackEntry?.destination?.route != PriceRecommenderScreen.HomeScreen.name
+
+    val homeScreenState by homeScreenViewModel.uiState.collectAsState()
+    val bestRouteState by bestRouteViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -60,17 +64,17 @@ fun PriceRecommenderApp(
         ) {
             composable(route = PriceRecommenderScreen.HomeScreen.name) {
                 HomeScreen(
-                    state.currentRange,
-                    state.currentAddress,
-                    state.addresses,
+                    homeScreenState.currentRange,
+                    homeScreenState.currentAddress,
+                    homeScreenState.addresses,
                     onAddAddressClick = { navController.navigate(PriceRecommenderScreen.AddAddressScreen.name) },
-                    onSelectAddress = { viewModel.updateCurrentAddress(it) },
-                    onDeleteAddress = { viewModel.deleteAddress(it) },
+                    onSelectAddress = { homeScreenViewModel.updateCurrentAddress(it) },
+                    onDeleteAddress = { homeScreenViewModel.deleteAddress(it) },
                     onCheckBestRouteClick = { navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name) },
                     onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) },
                     onSavingsReportClick = { navController.navigate(PriceRecommenderScreen.SavingsReportScreen.name) },
                     onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) },
-                    onRangeSelected = { viewModel.updateCurrentRange(it) }
+                    onRangeSelected = { homeScreenViewModel.updateCurrentRange(it) }
                 )
             }
 
@@ -82,7 +86,13 @@ fun PriceRecommenderApp(
             }
 
             composable(route = PriceRecommenderScreen.CheckBestRouteScreen.name) {
-                CheckBestRouteScreen()
+                CheckBestRouteScreen(
+                    cameraPosition =  bestRouteViewModel.getCameraPosition(),
+                    isMapLoaded = bestRouteState.isMapLoaded,
+                    markers = bestRouteViewModel.getMarkers(),
+                    updateIsMapLoaded = { bestRouteViewModel.updateIsLoadedMap(it) },
+                    updateCameraPosition = { latLng, zoom -> bestRouteViewModel.updateCameraPosition(latLng, zoom) }
+                )
             }
 
             composable(route = PriceRecommenderScreen.AddPurchaseScreen.name) {
@@ -104,7 +114,7 @@ fun PriceRecommenderApp(
             composable(route = PriceRecommenderScreen.AddressManualEntryScreen.name) {
                 AddressManualEntryScreen(
                     {
-                        viewModel.insertAddress(it)
+                        homeScreenViewModel.insertAddress(it)
                         navController.navigate(PriceRecommenderScreen.HomeScreen.name)
                     },
                     {

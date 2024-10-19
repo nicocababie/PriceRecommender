@@ -20,6 +20,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        resValue("string", "maps_api_key", "AIzaSyDVZAlgOZd5r9-rPVi9H7WCj-NDlt4TxKY")
     }
 
     buildTypes {
@@ -80,6 +82,10 @@ dependencies {
 
     //DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    //Google Maps
+    implementation("com.google.maps.android:maps-compose:2.11.2")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

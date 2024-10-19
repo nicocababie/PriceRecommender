@@ -25,15 +25,6 @@ export class cartController {
 
     return await this._cartService.addToCart(products, userId);
   }
-
-  addToNewCart = async (req: Request, res: Response) => {
-    let data = req.body;
-    let userId = req.params.id;
-    let products : cartProductDto[] = data;
-
-    return await this._cartService.addToNewCart(products);
-  }
-
 }
 
 export default cartController;

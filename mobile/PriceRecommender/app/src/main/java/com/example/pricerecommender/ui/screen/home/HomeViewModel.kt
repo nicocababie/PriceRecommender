@@ -1,4 +1,4 @@
-package com.example.pricerecommender.ui
+package com.example.pricerecommender.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,12 +13,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PriceRecommenderViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val addressRepository: IAddressRepository,
     private val preferencesRepository: PreferencesRepository
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(PriceRecommenderUIState())
-    var uiState: StateFlow<PriceRecommenderUIState> = _uiState
+    private val _uiState = MutableStateFlow(HomeUIState())
+    var uiState: StateFlow<HomeUIState> = _uiState
 
     init {
         getCurrentAddress()

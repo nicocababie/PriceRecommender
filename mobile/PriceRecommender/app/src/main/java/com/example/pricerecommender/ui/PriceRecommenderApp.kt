@@ -31,16 +31,17 @@ import com.example.pricerecommender.ui.screen.AddAddressScreen
 import com.example.pricerecommender.ui.screen.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.AddressManualEntryScreen
 import com.example.pricerecommender.ui.screen.CartScreen
-import com.example.pricerecommender.ui.screen.HomeScreen
 import com.example.pricerecommender.ui.screen.SavingsReportScreen
 import com.example.pricerecommender.ui.screen.bestRoute.BestRouteViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.CheckBestRouteScreen
+import com.example.pricerecommender.ui.screen.home.HomeScreen
+import com.example.pricerecommender.ui.screen.home.HomeViewModel
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 import com.example.pricerecommender.ui.utils.PriceRecommenderScreen
 
 @Composable
 fun PriceRecommenderApp(
-    homeScreenViewModel: PriceRecommenderViewModel = hiltViewModel(),
+    homeScreenViewModel: HomeViewModel = hiltViewModel(),
     bestRouteViewModel: BestRouteViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()

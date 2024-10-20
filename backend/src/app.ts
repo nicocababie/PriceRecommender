@@ -17,6 +17,10 @@ import purchaseController from './controller/purchaseController';
 import { IuserService } from './serviceInterface/IuserService';
 import { userService } from './service/userService';
 import { userController } from './controller/userController';
+import IstoreDataAccess from './dataAccessInterface/IstoreDataAccess';
+import { storeDataAccess } from './dataAccess/storeDataAccess';
+import { IstoreService } from './serviceInterface/IstoreService';
+import { storeService } from './service/storeService';
 
 dotenv.config();
 
@@ -25,6 +29,12 @@ let server = http.createServer(app);
 let PORT = parseInt(process.env.PORT as string) || 4000;
 
 let container = new Container();
+
+container.bind<IstoreDataAccess>('IstoreDataAccess').to(storeDataAccess);
+let _storeDataAccess = container.get<IstoreDataAccess>('IstoreDataAccess');
+container.bind<IstoreService>('IstoreService').to(storeService);
+let _storeService = container.get<IstoreService>('IstoreService');
+
 
 container.bind<IcartDataAccess>('IcartDataAccess').to(cartDataAccess);
 let _cartDataAccess = container.get<IcartDataAccess>('IcartDataAccess');

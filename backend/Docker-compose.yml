@@ -5,7 +5,7 @@ services:
     image: mysql:5.7.24
     container_name: mysql
     volumes:
-      - obl-mysql-data:/var/lib/mysql
+      - obl-ihc-mysql-data:/var/lib/mysql
     ports:
       - "3306:3306"
     environment:
@@ -31,4 +31,4 @@ networks:
     driver: bridge
 
 volumes:
-  obl-mysql-data:
+  obl-ihc-mysql-data:

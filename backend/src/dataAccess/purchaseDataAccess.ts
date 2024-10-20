@@ -94,7 +94,9 @@ export class PurchaseDataAccess implements IpurchaseDataAccess {
                 storeAddress: purchase.storeAddress,
                 listProducts,
                 userId: purchase.userId,
-                date: purchase.date
+                date: purchase.date,
+                storeLatitude:0,
+                storeLongitude:0
             };
         } catch (error) {
             throw new Error("Error retrieving purchase: " + error.message);
@@ -134,7 +136,9 @@ export class PurchaseDataAccess implements IpurchaseDataAccess {
                     storeAddress: purchase.storeAddress,
                     listProducts,
                     userId: purchase.userId,
-                    date: purchase.date
+                    date: purchase.date,
+                    storeLatitude:0,
+                    storeLongitude:0
                 };
             });
         } catch (error) {

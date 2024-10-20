@@ -37,6 +37,7 @@ export class cartDataAccess implements IcartDataAccess {
                           productBrand: product.brand});
         }
       }
+
       return userId;
     } catch (error) {
       throw new InternalException(error.message, 500);

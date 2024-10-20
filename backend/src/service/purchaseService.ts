@@ -2,16 +2,30 @@ import { inject, injectable } from "inversify";
 import { purchaseDto } from "../dtos/purchaseDto";
 import { IpurchaseService } from "../serviceInterface/IpurchaseService";
 import IpurchaseDataAccess from "../dataAccessInterface/IpurchaseDataAccess";
+import { IstoreService } from "../serviceInterface/IstoreService";
+import { storeDto } from "../dtos/storeDto";
 
 @injectable()
 export class purchaseService implements IpurchaseService {
-    _purchaseDataAccess: IpurchaseDataAccess
-    constructor(@inject("IpurchaseDataAccess") IpurchaseDataAccess: IpurchaseDataAccess) {
+
+    _purchaseDataAccess: IpurchaseDataAccess;
+    _storeService: IstoreService;
+    constructor(@inject("IpurchaseDataAccess") IpurchaseDataAccess: IpurchaseDataAccess,
+    @inject("IstoreService") storeService: IstoreService) {
         this._purchaseDataAccess = IpurchaseDataAccess;
+        this._storeService = storeService;
     }
     
     createPurchase = async (data: purchaseDto) => {
         let result = await this._purchaseDataAccess.createPurchase(data);
+        let storeData : storeDto = { 
+            name: data.storeName,
+            addressName: data.storeAddress,
+            latitude: data.storeLatitude,
+            longitude: data.storeLongitude,
+            products: data.listProducts
+        }
+        await this._storeService.addStore(storeData);
         return result;
     }
     
@@ -28,4 +42,6 @@ export class purchaseService implements IpurchaseService {
         result = result.slice(0, 5);
         return result;
     }
+
+
 }

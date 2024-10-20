@@ -10,7 +10,7 @@ export class userService implements IuserService {
 
   createUser = async (): Promise<string> => {
     let userId : string = generateApiKey({method: 'string',
-        pool: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', batch: 6}).toString();
+        pool: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', length: 6}).toString();
     return userId;
   }
 }

@@ -49,6 +49,9 @@ fun PriceRecommenderApp(
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentScreen = PriceRecommenderScreen.valueOf(
+        backStackEntry?.destination?.route ?: PriceRecommenderScreen.HomeScreen.name
+    )
     val canNavigateBack = backStackEntry?.destination?.route != PriceRecommenderScreen.HomeScreen.name
 
     val addressState by addressViewModel.uiState.collectAsState()
@@ -59,6 +62,7 @@ fun PriceRecommenderApp(
         topBar = {
             PriceRecommenderTopAppBar(
                 canNavigateBack = canNavigateBack,
+                currentScreen = currentScreen,
                 navigateUp = { navController.navigateUp() }
             )
         }
@@ -108,7 +112,7 @@ fun PriceRecommenderApp(
                     updateStoreName = { purchaseViewModel.updateStoreName(it) },
                     updateStoreAddress = { purchaseViewModel.updateStoreAddress(it) },
                     onSelectProductsClick = { navController.navigate(PriceRecommenderScreen.SelectProductsScreen.name) },
-                    onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.HomeScreen.name) }
+                    onAddPurchaseClick = { navController.popBackStack() }
                 )
             }
 
@@ -116,9 +120,9 @@ fun PriceRecommenderApp(
                 SelectProductsScreen(
                     onAddProductClick = { name, amount, price, brand ->
                         purchaseViewModel.updateProductsList(name, amount, price, brand)
-                        navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name)
+                        navController.popBackStack()
                     },
-                    onReturnToPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) }
+                    onReturnToPurchaseClick = { navController.popBackStack() }
                 )
             }
 
@@ -138,10 +142,10 @@ fun PriceRecommenderApp(
                 AddressManualEntryScreen(
                     {
                         addressViewModel.insertAddress(it)
-                        navController.navigate(PriceRecommenderScreen.HomeScreen.name)
+                        navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)
                     },
                     {
-                        navController.navigate(PriceRecommenderScreen.HomeScreen.name)
+                        navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)
                     })
             }
         }
@@ -153,8 +157,13 @@ fun PriceRecommenderApp(
 @Composable
 fun PriceRecommenderTopAppBar(
     canNavigateBack: Boolean,
+    currentScreen: PriceRecommenderScreen,
     navigateUp: () -> Unit
 ) {
+    val title = when(currentScreen.name) {
+        PriceRecommenderScreen.HomeScreen.name -> R.string.app_name
+        else -> currentScreen.title
+    }
     TopAppBar(
         title = {
             Row(
@@ -170,7 +179,7 @@ fun PriceRecommenderTopAppBar(
                     }
                 }
                 Text(
-                    text = stringResource(R.string.app_name),
+                    text = stringResource(title),
                 )
                 Image(
                     painter = painterResource(id = R.drawable.pricerecommenderlogo),
@@ -185,6 +194,6 @@ fun PriceRecommenderTopAppBar(
 @Composable
 fun PriceRecommenderTopAppBarPreview() {
     PriceRecommenderTheme {
-        PriceRecommenderTopAppBar(false) {}
+        PriceRecommenderTopAppBar(false, PriceRecommenderScreen.HomeScreen) {}
     }
 }

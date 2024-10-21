@@ -32,6 +32,7 @@ import com.example.pricerecommender.ui.screen.SavingsReportScreen
 import com.example.pricerecommender.ui.screen.address.AddAddressScreen
 import com.example.pricerecommender.ui.screen.address.AddressManualEntryScreen
 import com.example.pricerecommender.ui.screen.address.AddressViewModel
+import com.example.pricerecommender.ui.screen.address.GeocodeExampleScreen
 import com.example.pricerecommender.ui.screen.bestRoute.BestRouteViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.CheckBestRouteScreen
 import com.example.pricerecommender.ui.screen.cart.CartScreen
@@ -144,16 +145,16 @@ fun PriceRecommenderApp(
             }
 
             composable(route = PriceRecommenderScreen.AddressGoogleMapsScreen.name) {
-
+                GeocodeExampleScreen()
             }
 
             composable(route = PriceRecommenderScreen.AddressManualEntryScreen.name) {
                 AddressManualEntryScreen(
-                    {
-                        addressViewModel.insertAddress(it)
+                    onAddAddressClick = { address, lat, lng ->
+                        addressViewModel.insertAddress(address, lat, lng)
                         navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)
                     },
-                    {
+                    onCancelClick = {
                         navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)
                     })
             }

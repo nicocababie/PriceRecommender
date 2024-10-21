@@ -35,9 +35,9 @@ class AddressViewModel @Inject constructor(
         saveCurrentAddress(address)
     }
 
-    fun insertAddress(address: String) {
+    fun insertAddress(address: String, lat: Double, lng: Double) {
         viewModelScope.launch(Dispatchers.IO) {
-            addressRepository.insert(address)
+            addressRepository.insert(address, lat, lng)
             _uiState.update { currentState ->
                 currentState.copy(
                     currentAddress = address

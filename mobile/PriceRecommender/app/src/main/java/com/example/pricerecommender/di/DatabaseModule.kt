@@ -27,6 +27,8 @@ object DatabaseModule {
             context,
             PriceRecommenderDatabase::class.java,
             "price_recommender"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
 
 }

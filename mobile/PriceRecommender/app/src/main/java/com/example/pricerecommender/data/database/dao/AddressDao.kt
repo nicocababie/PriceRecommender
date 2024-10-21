@@ -19,5 +19,5 @@ interface AddressDao {
     fun getAllAddresses(): List<Address>
 
     @Query("SELECT * FROM address WHERE address = :name")
-    fun getAddressByName(name: String): Address
+    fun getAddressByName(name: String): Address?
 }

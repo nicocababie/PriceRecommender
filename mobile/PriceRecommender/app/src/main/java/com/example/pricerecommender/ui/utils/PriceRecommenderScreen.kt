@@ -13,5 +13,6 @@ enum class PriceRecommenderScreen(
     SavingsReportScreen(R.string.savings_report),
     AddAddressScreen(R.string.add_address),
     AddressGoogleMapsScreen(R.string.google_maps),
-    AddressManualEntryScreen(R.string.manual_entry)
+    AddressManualEntryScreen(R.string.manual_entry),
+    SelectProductsScreen(R.string.select_products)
 }

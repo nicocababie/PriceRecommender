@@ -27,7 +27,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pricerecommender.R
-import com.example.pricerecommender.ui.screen.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.CartScreen
 import com.example.pricerecommender.ui.screen.HomeScreen
 import com.example.pricerecommender.ui.screen.SavingsReportScreen
@@ -36,6 +35,9 @@ import com.example.pricerecommender.ui.screen.address.AddressManualEntryScreen
 import com.example.pricerecommender.ui.screen.address.AddressViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.BestRouteViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.CheckBestRouteScreen
+import com.example.pricerecommender.ui.screen.purchase.AddPurchaseScreen
+import com.example.pricerecommender.ui.screen.purchase.PurchaseViewModel
+import com.example.pricerecommender.ui.screen.purchase.SelectProductsScreen
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 import com.example.pricerecommender.ui.utils.PriceRecommenderScreen
 
@@ -43,6 +45,7 @@ import com.example.pricerecommender.ui.utils.PriceRecommenderScreen
 fun PriceRecommenderApp(
     addressViewModel: AddressViewModel = hiltViewModel(),
     bestRouteViewModel: BestRouteViewModel = hiltViewModel(),
+    purchaseViewModel: PurchaseViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -50,6 +53,7 @@ fun PriceRecommenderApp(
 
     val addressState by addressViewModel.uiState.collectAsState()
     val bestRouteState by bestRouteViewModel.uiState.collectAsState()
+    val purchaseState by purchaseViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -97,7 +101,25 @@ fun PriceRecommenderApp(
             }
 
             composable(route = PriceRecommenderScreen.AddPurchaseScreen.name) {
-                AddPurchaseScreen()
+                AddPurchaseScreen(
+                    storeName = purchaseState.purchase.name,
+                    storeAddress = purchaseState.purchase.address,
+                    products = purchaseState.purchase.products,
+                    updateStoreName = { purchaseViewModel.updateStoreName(it) },
+                    updateStoreAddress = { purchaseViewModel.updateStoreAddress(it) },
+                    onSelectProductsClick = { navController.navigate(PriceRecommenderScreen.SelectProductsScreen.name) },
+                    onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.HomeScreen.name) }
+                )
+            }
+
+            composable(route = PriceRecommenderScreen.SelectProductsScreen.name) {
+                SelectProductsScreen(
+                    onAddProductClick = { name, amount, price, brand ->
+                        purchaseViewModel.updateProductsList(name, amount, price, brand)
+                        navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name)
+                    },
+                    onReturnToPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) }
+                )
             }
 
             composable(route = PriceRecommenderScreen.SavingsReportScreen.name) {

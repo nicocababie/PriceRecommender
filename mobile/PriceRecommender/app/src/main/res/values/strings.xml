@@ -6,7 +6,7 @@
     <string name="check_the_best_route">Best route</string>
     <string name="add_purchase">Add purchase</string>
     <string name="savings_report">Savings report</string>
-    <string name="create_shopping_list">Create shopping list</string>
+    <string name="create_shopping_list">Shopping list</string>
     <string name="address">Address</string>
     <string name="add_address">Add address</string>
     <string name="google_maps">Google Maps</string>
@@ -24,4 +24,5 @@
     <string name="add_product_store">Store</string>
     <string name="add_product">Add product</string>
     <string name="return_to_purchase">Return to purchase</string>
+    <string name="add_to_cart">Add to cart</string>
 </resources>

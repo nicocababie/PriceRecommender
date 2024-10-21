@@ -7,7 +7,7 @@ enum class PriceRecommenderScreen(
     @StringRes val title: Int
 ) {
     HomeScreen(R.string.home_screen),
-    CartScreen(R.string.cart_screen),
+    CartScreen(R.string.create_shopping_list),
     CheckBestRouteScreen(R.string.check_the_best_route),
     AddPurchaseScreen(R.string.add_purchase),
     SavingsReportScreen(R.string.savings_report),

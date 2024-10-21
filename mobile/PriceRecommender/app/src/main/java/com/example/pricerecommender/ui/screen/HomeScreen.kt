@@ -47,6 +47,7 @@ import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun HomeScreen(
+    cartItems: Int,
     currentRange: Float,
     currentAddress: String,
     addresses: List<String>,
@@ -132,6 +133,9 @@ fun HomeScreen(
                     Text(
                         text = stringResource(R.string.create_shopping_list)
                     )
+                    if (cartItems > 0) {
+                        Text(text = "(${cartItems.toString()})")
+                    }
                 }
             }
         }
@@ -322,6 +326,7 @@ fun AddressesList(
 fun HomeScreenPreview() {
     PriceRecommenderTheme {
         HomeScreen(
+            1,
             5f,
             "Av. Brasil 3919",
             emptyList(),

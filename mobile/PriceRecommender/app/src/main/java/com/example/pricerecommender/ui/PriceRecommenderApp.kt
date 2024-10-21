@@ -27,7 +27,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pricerecommender.R
-import com.example.pricerecommender.ui.screen.CartScreen
 import com.example.pricerecommender.ui.screen.HomeScreen
 import com.example.pricerecommender.ui.screen.SavingsReportScreen
 import com.example.pricerecommender.ui.screen.address.AddAddressScreen
@@ -35,6 +34,8 @@ import com.example.pricerecommender.ui.screen.address.AddressManualEntryScreen
 import com.example.pricerecommender.ui.screen.address.AddressViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.BestRouteViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.CheckBestRouteScreen
+import com.example.pricerecommender.ui.screen.cart.CartScreen
+import com.example.pricerecommender.ui.screen.cart.CartViewModel
 import com.example.pricerecommender.ui.screen.purchase.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.purchase.PurchaseViewModel
 import com.example.pricerecommender.ui.screen.purchase.SelectProductsScreen
@@ -46,6 +47,7 @@ fun PriceRecommenderApp(
     addressViewModel: AddressViewModel = hiltViewModel(),
     bestRouteViewModel: BestRouteViewModel = hiltViewModel(),
     purchaseViewModel: PurchaseViewModel = hiltViewModel(),
+    cartViewModel: CartViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -57,6 +59,7 @@ fun PriceRecommenderApp(
     val addressState by addressViewModel.uiState.collectAsState()
     val bestRouteState by bestRouteViewModel.uiState.collectAsState()
     val purchaseState by purchaseViewModel.uiState.collectAsState()
+    val cartState by cartViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -73,6 +76,7 @@ fun PriceRecommenderApp(
         ) {
             composable(route = PriceRecommenderScreen.HomeScreen.name) {
                 HomeScreen(
+                    cartState.cart.size,
                     addressState.currentRange,
                     addressState.currentAddress,
                     addressState.addresses,
@@ -131,7 +135,12 @@ fun PriceRecommenderApp(
             }
 
             composable(route = PriceRecommenderScreen.CartScreen.name) {
-                CartScreen()
+                CartScreen(
+                    cart = cartState.cart,
+                    onAddToCart = { name, amount, brand ->
+                        cartViewModel.updateCart(name, amount, brand)
+                    }
+                )
             }
 
             composable(route = PriceRecommenderScreen.AddressGoogleMapsScreen.name) {

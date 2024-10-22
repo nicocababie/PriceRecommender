@@ -21,6 +21,8 @@ import IstoreDataAccess from './dataAccessInterface/IstoreDataAccess';
 import { storeDataAccess } from './dataAccess/storeDataAccess';
 import { IstoreService } from './serviceInterface/IstoreService';
 import { storeService } from './service/storeService';
+import storeController from './controller/storeController';
+import Store from './domain/store';
 
 dotenv.config();
 
@@ -30,17 +32,20 @@ let PORT = parseInt(process.env.PORT as string) || 4000;
 
 let container = new Container();
 
+
 container.bind<IstoreDataAccess>('IstoreDataAccess').to(storeDataAccess);
 let _storeDataAccess = container.get<IstoreDataAccess>('IstoreDataAccess');
-container.bind<IstoreService>('IstoreService').to(storeService);
-let _storeService = container.get<IstoreService>('IstoreService');
-
 
 container.bind<IcartDataAccess>('IcartDataAccess').to(cartDataAccess);
 let _cartDataAccess = container.get<IcartDataAccess>('IcartDataAccess');
 container.bind<IcartService>('IcartService').to(cartService);
 let _cartService = container.get<IcartService>('IcartService');
 let _cartController = new cartController(_cartService);
+
+container.bind<IstoreService>('IstoreService').to(storeService);
+let _storeService = container.get<IstoreService>('IstoreService');
+let _storeController = new storeController(_storeService);
+
 
 container.bind<IpurchaseDataAccess>('IpurchaseDataAccess').to(PurchaseDataAccess);
 let _purchaseDataAccess = container.get<IpurchaseDataAccess>('IpurchaseDataAccess');
@@ -71,7 +76,7 @@ app.get('/users', async (req, res) => {await _userController.createUser(req, res
 
 app.get('/stats/:id', async (req, res) => { await _purchaseController.getLastPurchases(req, res) });
 
-app.post('/api/products/routes/:id', async (req, res) => {await storeController.calculateRoute(req, res)});
+app.post('/products/routes/:id', async (req, res) => {await _storeController.calculateRoute(req, res)});
 app.listen(PORT, '0.0.0.0', async () => {
   console.log(`IHC backend running on port ${PORT}`);
   try {

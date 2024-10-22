@@ -6,3 +6,9 @@ export class productDto {
     brand: string;
     store: string;
 }
+
+export class productNameBrand {
+    name: string;
+    brand: string;
+
+}

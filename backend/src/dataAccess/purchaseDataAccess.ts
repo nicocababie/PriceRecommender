@@ -32,7 +32,7 @@ export class PurchaseDataAccess implements IpurchaseDataAccess {
                             name: productData.name,
                             price: productData.price,
                             brand: productData.brand,
-                            store: productData.store
+                            store: data.storeAddress
                         },
                         { transaction }
                     );

@@ -17,7 +17,6 @@ export class purchaseService implements IpurchaseService {
     }
     
     createPurchase = async (data: purchaseDto) => {
-        let result = await this._purchaseDataAccess.createPurchase(data);
         let storeData : storeDto = { 
             name: data.storeName,
             addressName: data.storeAddress,
@@ -26,6 +25,7 @@ export class purchaseService implements IpurchaseService {
             products: data.listProducts
         }
         await this._storeService.addStore(storeData);
+        let result = await this._purchaseDataAccess.createPurchase(data);
         return result;
     }
     

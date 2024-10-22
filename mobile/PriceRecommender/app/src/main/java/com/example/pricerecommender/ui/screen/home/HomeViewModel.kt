@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.IAddressRepository
-import com.example.pricerecommender.data.repositoryInterface.IDepartmentRepository
+import com.example.pricerecommender.data.repositoryInterface.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val addressRepository: IAddressRepository,
-    private val departmentRepository: IDepartmentRepository,
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val userRepository: IUserRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUIState())
     var uiState: StateFlow<HomeUIState> = _uiState
@@ -26,6 +26,7 @@ class HomeViewModel @Inject constructor(
         getCurrentAddress()
         getCurrentRange()
         getAllAddresses()
+        getCurrentUserId()
     }
 
     fun updateCurrentAddress(address: String) {
@@ -127,6 +128,35 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    private fun saveUserId(id: String) {
+        viewModelScope.launch {
+            preferencesRepository.saveUserId(id)
+        }
+    }
+
+    private fun getCurrentUserId() {
+        viewModelScope.launch {
+            preferencesRepository.userId
+                .collect { savedUserId ->
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            userId = savedUserId
+                        )
+                    }
+                    if (savedUserId == "") {
+                        val user = userRepository.getUserId()
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                userId = user.id
+                            )
+                        }
+                        saveUserId(user.id)
+                    }
+                }
+
         }
     }
 }

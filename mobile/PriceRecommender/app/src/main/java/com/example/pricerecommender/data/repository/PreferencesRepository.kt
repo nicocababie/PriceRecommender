@@ -41,9 +41,23 @@ class PreferencesRepository @Inject constructor(
             storage[USER_RANGE] ?: ""
         }
 
+    val userId: Flow<String> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading user id", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { storage ->
+            storage[USER_ID] ?: ""
+        }
+
     private companion object {
         val USER_ADDRESS = stringPreferencesKey("user_address")
         val USER_RANGE = stringPreferencesKey("user_range")
+        val USER_ID = stringPreferencesKey("user_id")
         const val TAG = "PreferencesRepository"
     }
 
@@ -56,6 +70,12 @@ class PreferencesRepository @Inject constructor(
     suspend fun saveUserRange(range: Float) {
         dataStore.edit { storage ->
             storage[USER_RANGE] = range.toString()
+        }
+    }
+
+    suspend fun saveUserId(id: String) {
+        dataStore.edit { storage ->
+            storage[USER_ID] = id
         }
     }
 }

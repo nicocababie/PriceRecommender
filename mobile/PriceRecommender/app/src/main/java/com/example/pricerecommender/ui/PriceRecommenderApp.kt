@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pricerecommender.R
 import com.example.pricerecommender.ui.screen.SavingsReportScreen
 import com.example.pricerecommender.ui.screen.address.AddressManualEntryScreen
+import com.example.pricerecommender.ui.screen.address.AddressViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.BestRouteViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.CheckBestRouteScreen
 import com.example.pricerecommender.ui.screen.cart.CartScreen
@@ -47,6 +48,7 @@ fun PriceRecommenderApp(
     bestRouteViewModel: BestRouteViewModel = hiltViewModel(),
     purchaseViewModel: PurchaseViewModel = hiltViewModel(),
     cartViewModel: CartViewModel = hiltViewModel(),
+    addressViewModel: AddressViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -59,6 +61,7 @@ fun PriceRecommenderApp(
     val bestRouteState by bestRouteViewModel.uiState.collectAsState()
     val purchaseState by purchaseViewModel.uiState.collectAsState()
     val cartState by cartViewModel.uiState.collectAsState()
+    val addressState by addressViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -137,14 +140,25 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.AddressManualEntryScreen.name) {
                 AddressManualEntryScreen(
-                    departments = homeState.departments,
+                    currentAddress = addressState.currentAddress,
+                    currentDepartment = addressState.currentDepartment,
+                    currentCoord = addressState.currentCoord,
+                    updateCurrentAddress = { addressViewModel.updateCurrentAddress(it) },
+                    updateCurrentDepartment = { addressViewModel.updateCurrentDepartment(it) },
+                    updateCurrentCoord = { addressViewModel.updateCurrentCoord(it) },
+                    cameraPosition = addressViewModel.getCameraPosition(),
+                    departments = addressState.departments,
                     onAddAddressClick = { address, lat, lng ->
                         homeViewModel.insertAddress(address, lat, lng)
                         navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)
                     },
                     onCancelClick = {
                         navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)
-                    })
+                    },
+                    emptyState = { addressViewModel.emptyState() },
+                    updateCameraPosition = { latLng, zoom ->
+                        addressViewModel.updateCameraPosition(latLng, zoom) }
+                )
             }
         }
     }

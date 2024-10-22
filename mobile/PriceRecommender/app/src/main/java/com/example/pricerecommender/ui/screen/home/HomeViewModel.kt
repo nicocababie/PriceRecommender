@@ -26,7 +26,6 @@ class HomeViewModel @Inject constructor(
         getCurrentAddress()
         getCurrentRange()
         getAllAddresses()
-        getAllDepartments()
     }
 
     fun updateCurrentAddress(address: String) {
@@ -128,18 +127,6 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                 }
-        }
-    }
-
-    private fun getAllDepartments() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    departments = departmentRepository.getAllDepartments().map {
-                        it.name
-                    }
-                )
-            }
         }
     }
 }

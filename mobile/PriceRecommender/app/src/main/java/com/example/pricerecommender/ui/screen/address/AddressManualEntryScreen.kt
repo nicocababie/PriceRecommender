@@ -42,6 +42,7 @@ import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -49,21 +50,23 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun AddressManualEntryScreen(
+    currentAddress: String,
+    currentDepartment: String,
+    currentCoord: LatLng,
+    updateCurrentAddress: (String) -> Unit,
+    updateCurrentDepartment: (String) -> Unit,
+    updateCurrentCoord: (LatLng) -> Unit,
+    cameraPosition: CameraPositionState,
     departments: List<String>,
     onAddAddressClick: (String, Double, Double) -> Unit,
-    onCancelClick: () -> Unit
+    onCancelClick: () -> Unit,
+    emptyState: () -> Unit,
+    updateCameraPosition: (LatLng, Float) -> Unit
 ) {
     val context = LocalContext.current
-    var addressInput by remember { mutableStateOf("") }
-    var selectedDepartment by remember { mutableStateOf("Select department") }
-    var expanded by remember { mutableStateOf(false) }
-    var coord by remember { mutableStateOf(LatLng(0.0, 0.0)) }
-    var lat by remember { mutableStateOf(0.0) }
-    var lng by remember { mutableStateOf(0.0) }
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(coord, 10f)
-    }
     val keyboardController = LocalSoftwareKeyboardController.current
+    var expanded by remember { mutableStateOf(false) }
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -79,8 +82,8 @@ fun AddressManualEntryScreen(
                 fontSize = 24.sp
             )
             OutlinedTextField(
-                value = addressInput,
-                onValueChange = { addressInput = it },
+                value = currentAddress,
+                onValueChange = { updateCurrentAddress(it) },
                 singleLine = true,
                 label = { Text("Address") },
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -99,7 +102,7 @@ fun AddressManualEntryScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ){
                 Text(
-                    text = selectedDepartment,
+                    text = currentDepartment,
                 )
                 OutlinedButton(
                     onClick = { expanded = !expanded },
@@ -124,7 +127,7 @@ fun AddressManualEntryScreen(
                     departments.forEach {
                         OutlinedButton(
                             onClick = {
-                                selectedDepartment = it
+                                updateCurrentDepartment(it)
                                 expanded = false
                             },
                             modifier = Modifier
@@ -143,14 +146,14 @@ fun AddressManualEntryScreen(
                 ) {
                     Button(onClick = {
                         keyboardController?.hide()
-                        val input = "${addressInput}, ${selectedDepartment}"
+                        val input = "${currentAddress}, ${currentDepartment}"
                         geocodeLocation(context, input) { latLng ->
                             latLng?.let {
-                                lat = it.latitude
-                                lng = it.longitude
-                                coord = LatLng(lat, lng)
-                                cameraPositionState.position =
-                                    CameraPosition.fromLatLngZoom(coord, 15f)
+                                val coord = LatLng(it.latitude, it.longitude)
+                                updateCurrentCoord(coord)
+                                updateCameraPosition(coord, 15f)
+                                cameraPosition.position =
+                                    CameraPosition.fromLatLngZoom(currentCoord, 15f)
                             } ?: Toast.makeText(
                                 context,
                                 "Invalid address format",
@@ -160,15 +163,20 @@ fun AddressManualEntryScreen(
                     }) {
                         Text(text = "Check")
                     }
-                    Button(onClick = onCancelClick) {
+                    Button(onClick =
+                    {
+                        onCancelClick()
+                        emptyState()
+                    }
+                    ) {
                         Text(text = "Cancel")
                     }
                 }
             }
-            if (coord != LatLng(0.0, 0.0)) {
-                val markerState = MarkerState(position = coord)
+            if (currentCoord != LatLng(0.0, 0.0)) {
+                val markerState = MarkerState(position = currentCoord)
                 GoogleMap(
-                    cameraPositionState = cameraPositionState,
+                    cameraPositionState = cameraPosition,
                     modifier = Modifier
                         .fillMaxSize(0.9f)
                         .clip(RoundedCornerShape(12.dp))
@@ -177,7 +185,14 @@ fun AddressManualEntryScreen(
                 }
                 CustomOutlinedButton(
                     text = "Submit",
-                    onClick = { onAddAddressClick(addressInput, lat, lng) }
+                    onClick = {
+                        onAddAddressClick(
+                            currentAddress,
+                            currentCoord.latitude,
+                            currentCoord.longitude
+                        )
+                        emptyState()
+                    }
                 )
             }
 
@@ -189,6 +204,20 @@ fun AddressManualEntryScreen(
 @Composable
 fun AddAddressManualScreenPreview() {
     PriceRecommenderTheme {
-        AddressManualEntryScreen(listOf("Colonia", "Rocha"), { address, lat, lng ->}, {})
+        val cameraPositionState = rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 10f)
+        }
+        AddressManualEntryScreen(
+            "",
+            "",
+            LatLng(0.0,0.0),
+            {},
+            {},
+            {},
+            cameraPositionState,listOf("Colonia", "Rocha"),
+            { address, lat, lng ->},
+            {},
+            {},
+            {latLng, zoom ->})
     }
 }

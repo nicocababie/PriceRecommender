@@ -150,6 +150,7 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.AddressManualEntryScreen.name) {
                 AddressManualEntryScreen(
+                    departments = addressState.departments,
                     onAddAddressClick = { address, lat, lng ->
                         addressViewModel.insertAddress(address, lat, lng)
                         navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)

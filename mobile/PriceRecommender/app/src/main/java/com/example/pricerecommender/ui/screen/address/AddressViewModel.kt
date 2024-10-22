@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.IAddressRepository
+import com.example.pricerecommender.data.repositoryInterface.IDepartmentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddressViewModel @Inject constructor(
     private val addressRepository: IAddressRepository,
+    private val departmentRepository: IDepartmentRepository,
     private val preferencesRepository: PreferencesRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AddressUIState())
@@ -24,6 +26,7 @@ class AddressViewModel @Inject constructor(
         getCurrentAddress()
         getCurrentRange()
         getAllAddresses()
+        getAllDepartments()
     }
 
     fun updateCurrentAddress(address: String) {
@@ -125,6 +128,18 @@ class AddressViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    private fun getAllDepartments() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    departments = departmentRepository.getAllDepartments().map {
+                        it.name
+                    }
+                )
+            }
         }
     }
 }

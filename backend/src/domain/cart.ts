@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database';
+import Product from './product';
 
 
 export const Cart = sequelize.define("Cart", {
@@ -12,17 +13,17 @@ export const Cart = sequelize.define("Cart", {
         type: DataTypes.STRING,
         allowNull: false
     },
-    productName: {
-        type: DataTypes.STRING,
-        allowNull: false
+    productId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Product,
+            key: 'id'
+        }
     },
     productAmount: {
         type: DataTypes.FLOAT,
         allowNull: false
-    },
-    productBrand: {
-        type: DataTypes.STRING,
-        allowNull: true
     },
 },
     {
@@ -30,7 +31,7 @@ export const Cart = sequelize.define("Cart", {
         timestamps: false,
         indexes: [
             {
-                unique: true,
+                unique: false,
                 fields: ['userId']
             }
         ]

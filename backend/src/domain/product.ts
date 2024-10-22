@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../config/database";
+import Store from "./store";
 
 // Definir la interfaz para Product
 interface ProductAttributes {
@@ -45,9 +46,13 @@ Product.init(
             type: DataTypes.STRING,
             allowNull: false
         },
-        store: {
+        store: {        //StoreAddress
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            references: {
+                model: Store,
+                key: 'addressName'
+            }
         }
     },
     {

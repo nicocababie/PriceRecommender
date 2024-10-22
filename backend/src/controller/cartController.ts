@@ -15,15 +15,23 @@ export class cartController {
     let data = req.body;
     let userId = req.params.id;
     let products : cartProductDto[] = data;
-
-    return await this._cartService.overwriteCart(products, userId);
+    try{
+      await this._cartService.overwriteCart(products, userId);
+      res.status(200).json("Cart overwritten successfully");
+    }catch(error){
+      res.status(500).json("Cart operation failed");
+    }
   }
   addToCart = async (req: Request, res: Response) => {
     let data = req.body;
     let userId = req.params.id;
     let products : cartProductDto[] = data;
-
-    return await this._cartService.addToCart(products, userId);
+    try{
+      await this._cartService.addToCart(products, userId);
+      res.status(200).json("Cart updated successfully");
+    }catch(error){
+      res.status(500).json("Cart operation failed");
+    }
   }
 }
 

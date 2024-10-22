@@ -1,6 +1,6 @@
-package com.example.pricerecommender.ui.screen.address
+package com.example.pricerecommender.ui.screen.home
 
-data class AddressUIState(
+data class HomeUIState(
     val currentRange: Float = 0f,
     val currentAddress: String = "",
     val addresses: List<String> = emptyList(),

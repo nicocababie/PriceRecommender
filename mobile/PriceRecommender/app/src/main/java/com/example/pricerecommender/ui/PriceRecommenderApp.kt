@@ -121,13 +121,19 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.AddPurchaseScreen.name) {
                 AddPurchaseScreen(
+                    userId = homeState.userId,
                     storeName = purchaseState.purchase.name,
                     storeAddress = purchaseState.purchase.address,
                     products = purchaseState.purchase.products,
+                    storeCoord = purchaseState.storeCoord,
                     updateStoreName = { purchaseViewModel.updateStoreName(it) },
                     updateStoreAddress = { purchaseViewModel.updateStoreAddress(it) },
                     onSelectProductsClick = { navController.navigate(PriceRecommenderScreen.SelectProductsScreen.name) },
-                    onAddPurchaseClick = { navController.popBackStack() }
+                    updateStoreCoord = { purchaseViewModel.updateStoreCoord(it) },
+                    onAddPurchaseClick = { userId, storeName, storeAddress, products, coord, context ->
+                        purchaseViewModel.addPurchase(userId, storeName, storeAddress, products, coord, context)
+                        navController.popBackStack()
+                    }
                 )
             }
 
@@ -176,6 +182,20 @@ fun PriceRecommenderApp(
                         addressViewModel.updateCameraPosition(latLng, zoom) }
                 )
             }
+
+            composable(route = PriceRecommenderScreen.ErrorScreen.name) {
+                val errorState = homeState.apiState as ApiUIState.Error
+                ErrorScreen(
+                    message = errorState.exception.message ?: errorState.defaultMessage,
+                    onRetry = { navController.popBackStack() }
+                )
+            }
+
+
+            composable(route = PriceRecommenderScreen.LoadingScreen.name) {
+                LoadingScreen()
+            }
+
         }
     }
 

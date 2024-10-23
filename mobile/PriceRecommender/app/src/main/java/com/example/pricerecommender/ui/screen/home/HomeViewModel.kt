@@ -2,7 +2,6 @@ package com.example.pricerecommender.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pricerecommender.data.model.User
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.IAddressRepository
 import com.example.pricerecommender.data.repositoryInterface.IUserRepository
@@ -23,9 +22,6 @@ class HomeViewModel @Inject constructor(
 ): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUIState())
     var uiState: StateFlow<HomeUIState> = _uiState
-
-    private val _userApiState = MutableStateFlow<ApiUIState<User>>(ApiUIState.Loading)
-    var userApiState: StateFlow<ApiUIState<User>> = _userApiState
 
     init {
         getCurrentAddress()

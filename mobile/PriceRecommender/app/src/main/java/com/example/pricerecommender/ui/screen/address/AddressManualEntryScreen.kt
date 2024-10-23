@@ -209,7 +209,7 @@ fun AddAddressManualScreenPreview() {
         }
         AddressManualEntryScreen(
             "",
-            "",
+            "Select a department",
             LatLng(0.0,0.0),
             {},
             {},

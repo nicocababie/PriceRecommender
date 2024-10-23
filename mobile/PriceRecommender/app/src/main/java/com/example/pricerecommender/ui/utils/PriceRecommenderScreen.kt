@@ -12,5 +12,7 @@ enum class PriceRecommenderScreen(
     AddPurchaseScreen(R.string.add_purchase),
     SavingsReportScreen(R.string.savings_report),
     AddressManualEntryScreen(R.string.manual_entry),
-    SelectProductsScreen(R.string.select_products)
+    SelectProductsScreen(R.string.select_products),
+    ErrorScreen(R.string.error_screen),
+    LoadingScreen(R.string.loading_screen)
 }

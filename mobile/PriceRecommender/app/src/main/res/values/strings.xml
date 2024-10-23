@@ -26,4 +26,6 @@
     <string name="return_to_purchase">Return to purchase</string>
     <string name="add_to_cart">Add to cart</string>
     <string name="retry">Retry</string>
+    <string name="error_screen">Error</string>
+    <string name="loading_screen">Loading</string>
 </resources>

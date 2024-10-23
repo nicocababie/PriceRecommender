@@ -22,12 +22,12 @@ import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun SelectProductsScreen(
-    onAddProductClick: (String, String, String, String) -> Unit,
+    onAddProductClick: (String, Int, Double, String) -> Unit,
     onReturnToPurchaseClick: () -> Unit
 ) {
     var productName by remember { mutableStateOf("") }
-    var productAmount by remember { mutableStateOf("") }
-    var productPrice by remember { mutableStateOf("") }
+    var productAmount by remember { mutableStateOf(0) }
+    var productPrice by remember { mutableStateOf(0.0) }
     var productBrand by remember { mutableStateOf("") }
 
     Column(
@@ -47,13 +47,17 @@ fun SelectProductsScreen(
             )
             NumberInput(
                 title = stringResource(R.string.add_product_amount),
-                inputState = productAmount,
-                saveInput = { productAmount = it }
+                inputState = productAmount.toString(),
+                saveInput = { input ->
+                    productAmount = if (input.isNotEmpty()) input.toInt() else 0
+                }
             )
             NumberInput(
                 title = stringResource(R.string.add_product_price),
-                inputState = productPrice,
-                saveInput = { productPrice = it }
+                inputState = productPrice.toString(),
+                saveInput = { input ->
+                    productPrice = if (input.isNotEmpty()) input.toDouble() else 0.0
+                }
             )
             TextInput(
                 title = stringResource(R.string.add_product_brand),
@@ -66,12 +70,14 @@ fun SelectProductsScreen(
         ){
             CustomOutlinedButton(
                 text = stringResource(R.string.add_product),
-                onClick = { onAddProductClick(
-                    productName,
-                    productAmount,
-                    productPrice,
-                    productBrand
-                ) }
+                onClick = {
+                    onAddProductClick(
+                        productName,
+                        productAmount,
+                        productPrice,
+                        productBrand
+                    )
+                }
             )
             CustomOutlinedButton(
                 text = stringResource(R.string.return_to_purchase),

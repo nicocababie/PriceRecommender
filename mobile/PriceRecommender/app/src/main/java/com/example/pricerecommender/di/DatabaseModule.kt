@@ -37,7 +37,6 @@ object DatabaseModule {
             PriceRecommenderDatabase::class.java,
             "price_recommender"
         )
-            .fallbackToDestructiveMigration()
+            .createFromAsset("database/price_recommender.db")
             .build()
-
 }

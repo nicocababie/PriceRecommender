@@ -2,9 +2,11 @@ package com.example.pricerecommender.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pricerecommender.data.model.User
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.IAddressRepository
 import com.example.pricerecommender.data.repositoryInterface.IUserRepository
+import com.example.pricerecommender.ui.ApiUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +23,9 @@ class HomeViewModel @Inject constructor(
 ): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUIState())
     var uiState: StateFlow<HomeUIState> = _uiState
+
+    private val _userApiState = MutableStateFlow<ApiUIState<User>>(ApiUIState.Loading)
+    var userApiState: StateFlow<ApiUIState<User>> = _userApiState
 
     init {
         getCurrentAddress()
@@ -122,9 +127,10 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             preferencesRepository.userRange
                 .collect { savedRange ->
+                    val rangeValue = if (savedRange.isEmpty()) 0.0f else savedRange.toFloat()
                     _uiState.update { currentState ->
                         currentState.copy(
-                            currentRange = savedRange.toFloat()
+                            currentRange = rangeValue
                         )
                     }
                 }
@@ -143,17 +149,32 @@ class HomeViewModel @Inject constructor(
                 .collect { savedUserId ->
                     _uiState.update { currentState ->
                         currentState.copy(
-                            userId = savedUserId
+                            userId = savedUserId,
+                            apiState = ApiUIState.Success(savedUserId)
                         )
                     }
                     if (savedUserId == "") {
-                        val user = userRepository.getUserId()
                         _uiState.update { currentState ->
                             currentState.copy(
-                                userId = user.id
+                                apiState = ApiUIState.Loading
                             )
                         }
-                        saveUserId(user.id)
+                        try {
+                            val user = userRepository.getUserId()
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    userId = user.id,
+                                    apiState = ApiUIState.Success(user)
+                                )
+                            }
+                            saveUserId(user.id)
+                        } catch (e: Exception) {
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    apiState = ApiUIState.Error(e)
+                                )
+                            }
+                        }
                     }
                 }
 

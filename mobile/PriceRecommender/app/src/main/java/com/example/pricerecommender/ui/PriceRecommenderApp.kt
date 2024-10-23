@@ -30,6 +30,8 @@ import com.example.pricerecommender.R
 import com.example.pricerecommender.ui.screen.SavingsReportScreen
 import com.example.pricerecommender.ui.screen.address.AddressManualEntryScreen
 import com.example.pricerecommender.ui.screen.address.AddressViewModel
+import com.example.pricerecommender.ui.screen.api.ErrorScreen
+import com.example.pricerecommender.ui.screen.api.LoadingScreen
 import com.example.pricerecommender.ui.screen.bestRoute.BestRouteViewModel
 import com.example.pricerecommender.ui.screen.bestRoute.CheckBestRouteScreen
 import com.example.pricerecommender.ui.screen.cart.CartScreen
@@ -77,20 +79,33 @@ fun PriceRecommenderApp(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = PriceRecommenderScreen.HomeScreen.name) {
-                HomeScreen(
-                    cartState.cart.size,
-                    homeState.currentRange,
-                    homeState.currentAddress,
-                    homeState.addresses,
-                    onAddAddressClick = { navController.navigate(PriceRecommenderScreen.AddressManualEntryScreen.name) },
-                    onSelectAddress = { homeViewModel.updateCurrentAddress(it) },
-                    onDeleteAddress = { homeViewModel.deleteAddress(it) },
-                    onCheckBestRouteClick = { navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name) },
-                    onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) },
-                    onSavingsReportClick = { navController.navigate(PriceRecommenderScreen.SavingsReportScreen.name) },
-                    onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) },
-                    onRangeSelected = { homeViewModel.updateCurrentRange(it) }
-                )
+                when (homeState.apiState) {
+                    is ApiUIState.Loading -> {
+                        LoadingScreen()
+                    }
+                    is ApiUIState.Error -> {
+                        ErrorScreen(
+                            message = (homeState.apiState as ApiUIState.Error).exception.message ?: "Unknokn error",
+                            onRetry = {  }
+                        )
+                    }
+                    is ApiUIState.Success -> {
+                        HomeScreen(
+                            cartState.cart.size,
+                            homeState.currentRange,
+                            homeState.currentAddress,
+                            homeState.addresses,
+                            onAddAddressClick = { navController.navigate(PriceRecommenderScreen.AddressManualEntryScreen.name) },
+                            onSelectAddress = { homeViewModel.updateCurrentAddress(it) },
+                            onDeleteAddress = { homeViewModel.deleteAddress(it) },
+                            onCheckBestRouteClick = { navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name) },
+                            onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) },
+                            onSavingsReportClick = { navController.navigate(PriceRecommenderScreen.SavingsReportScreen.name) },
+                            onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) },
+                            onRangeSelected = { homeViewModel.updateCurrentRange(it) }
+                        )
+                    }
+                }
             }
 
             composable(route = PriceRecommenderScreen.CheckBestRouteScreen.name) {

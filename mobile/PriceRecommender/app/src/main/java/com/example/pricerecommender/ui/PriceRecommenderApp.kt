@@ -84,9 +84,10 @@ fun PriceRecommenderApp(
                         LoadingScreen()
                     }
                     is ApiUIState.Error -> {
+                        val errorState = homeState.apiState as ApiUIState.Error
                         ErrorScreen(
-                            message = (homeState.apiState as ApiUIState.Error).exception.message ?: "Unknokn error",
-                            onRetry = {  }
+                            message = errorState.exception.message ?: errorState.defaultMessage,
+                            onRetry = { homeViewModel.getCurrentUserId() }
                         )
                     }
                     is ApiUIState.Success -> {

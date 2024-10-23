@@ -143,7 +143,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getCurrentUserId() {
+    fun getCurrentUserId() {
         viewModelScope.launch {
             preferencesRepository.userId
                 .collect { savedUserId ->

@@ -38,6 +38,7 @@ import com.example.pricerecommender.ui.screen.cart.CartScreen
 import com.example.pricerecommender.ui.screen.cart.CartViewModel
 import com.example.pricerecommender.ui.screen.home.HomeScreen
 import com.example.pricerecommender.ui.screen.home.HomeViewModel
+import com.example.pricerecommender.ui.screen.product.ProductViewModel
 import com.example.pricerecommender.ui.screen.purchase.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.purchase.PurchaseViewModel
 import com.example.pricerecommender.ui.screen.purchase.SelectProductsScreen
@@ -49,6 +50,7 @@ fun PriceRecommenderApp(
     homeViewModel: HomeViewModel = hiltViewModel(),
     bestRouteViewModel: BestRouteViewModel = hiltViewModel(),
     purchaseViewModel: PurchaseViewModel = hiltViewModel(),
+    productViewModel: ProductViewModel = hiltViewModel(),
     cartViewModel: CartViewModel = hiltViewModel(),
     addressViewModel: AddressViewModel = hiltViewModel(),
 ) {
@@ -62,6 +64,7 @@ fun PriceRecommenderApp(
     val homeState by homeViewModel.uiState.collectAsState()
     val bestRouteState by bestRouteViewModel.uiState.collectAsState()
     val purchaseState by purchaseViewModel.uiState.collectAsState()
+    val productState by productViewModel.uiState.collectAsState()
     val cartState by cartViewModel.uiState.collectAsState()
     val addressState by addressViewModel.uiState.collectAsState()
 
@@ -160,6 +163,14 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.SelectProductsScreen.name) {
                 SelectProductsScreen(
+                    currentName = productState.currentName,
+                    currentAmount = productState.currentAmount,
+                    currentPrice = productState.currentPrice,
+                    currentBrand = productState.currentBrand,
+                    updateCurrentName = { productViewModel.updateCurrentName(it) },
+                    updateCurrentAmount = { productViewModel.updateCurrentAmount(it) },
+                    updateCurrentPrice = { productViewModel.updateCurrentPrice(it) },
+                    updateCurrentBrand = { productViewModel.updateCurrentBrand(it) },
                     onAddProductClick = { name, amount, price, brand ->
                         purchaseViewModel.updateProductsList(name, amount, price, brand)
                         navController.popBackStack()
@@ -175,6 +186,12 @@ fun PriceRecommenderApp(
             composable(route = PriceRecommenderScreen.CartScreen.name) {
                 CartScreen(
                     cart = cartState.cart,
+                    currentName = cartState.currentName,
+                    currentAmount = cartState.currentAmount,
+                    currentBrand = cartState.currentBrand,
+                    updateCurrentName = { cartViewModel.updateCurrentName(it) },
+                    updateCurrentAmount = { cartViewModel.updateCurrentAmount(it) },
+                    updateCurrentBrand = { cartViewModel.updateCurrentBrand(it) },
                     onAddToCart = { name, amount, brand ->
                         cartViewModel.updateCart(name, amount, brand)
                     }

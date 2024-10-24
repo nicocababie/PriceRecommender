@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,18 +18,22 @@ import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun SelectProductsScreen(
+    currentName: String,
+    currentAmount: Int,
+    currentPrice: Double,
+    currentBrand: String,
+    updateCurrentName: (String) -> Unit,
+    updateCurrentAmount: (Int) -> Unit,
+    updateCurrentPrice: (Double) -> Unit,
+    updateCurrentBrand: (String) -> Unit,
     onAddProductClick: (String, Int, Double, String) -> Unit,
     onReturnToPurchaseClick: () -> Unit
 ) {
-    var productName by remember { mutableStateOf("") }
-    var productAmount by remember { mutableStateOf(0) }
-    var productPrice by remember { mutableStateOf(0.0) }
-    var productBrand by remember { mutableStateOf("") }
     val enabled =
-            productName != "" &&
-            productAmount != 0 &&
-            productPrice != 0.0 &&
-            productBrand != ""
+            currentName != "" &&
+            currentAmount != 0 &&
+            currentPrice != 0.0 &&
+            currentBrand != ""
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,27 +47,29 @@ fun SelectProductsScreen(
         ) {
             TextInput(
                 title = stringResource(R.string.add_product_name),
-                inputState = productName,
-                saveInput = { productName = it }
+                inputState = currentName,
+                saveInput = { updateCurrentName(it) }
             )
             NumberInput(
                 title = stringResource(R.string.add_product_amount),
-                inputState = productAmount.toString(),
+                inputState = currentAmount.toString(),
                 saveInput = { input ->
-                    productAmount = if (input.isNotEmpty()) input.toInt() else 0
+                    val productAmount = if (input.isNotEmpty()) input.toInt() else 0
+                    updateCurrentAmount(productAmount)
                 }
             )
             NumberInput(
                 title = stringResource(R.string.add_product_price),
-                inputState = productPrice.toString(),
+                inputState = currentPrice.toString(),
                 saveInput = { input ->
-                    productPrice = if (input.isNotEmpty()) input.toDouble() else 0.0
+                    val productPrice = if (input.isNotEmpty()) input.toDouble() else 0.0
+                    updateCurrentPrice(productPrice)
                 }
             )
             TextInput(
                 title = stringResource(R.string.add_product_brand),
-                inputState = productBrand,
-                saveInput = { productBrand = it }
+                inputState = currentBrand,
+                saveInput = { updateCurrentBrand(it) }
             )
         }
         Column(
@@ -77,10 +79,10 @@ fun SelectProductsScreen(
                 text = stringResource(R.string.add_product),
                 onClick = {
                     onAddProductClick(
-                        productName,
-                        productAmount,
-                        productPrice,
-                        productBrand
+                        currentName,
+                        currentAmount,
+                        currentPrice,
+                        currentBrand
                     )
                 },
                 enabled = enabled
@@ -97,6 +99,16 @@ fun SelectProductsScreen(
 @Composable
 fun SelectProductsScreenPreview() {
     PriceRecommenderTheme {
-        SelectProductsScreen({name, amount, price, brand ->}, {})
+        SelectProductsScreen(
+            "Cereales",
+            2,
+            80.0,
+            "Kellogs",
+            {},
+            {},
+            {},
+            {},
+            {name, amount, price, brand ->}, {}
+        )
     }
 }

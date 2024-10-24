@@ -11,10 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,11 +28,14 @@ import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 @Composable
 fun CartScreen(
     cart: List<CartProduct>,
+    currentName: String,
+    currentAmount: String,
+    currentBrand: String,
+    updateCurrentName: (String) -> Unit,
+    updateCurrentAmount: (String) -> Unit,
+    updateCurrentBrand: (String) -> Unit,
     onAddToCart: (String, String, String) -> Unit
 ) {
-    var nameInput by remember { mutableStateOf("") }
-    var amountInput by remember { mutableStateOf("") }
-    var brandInput by remember { mutableStateOf("") }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -46,21 +45,21 @@ fun CartScreen(
     ){
         TextInput(
             title = stringResource(R.string.add_product_name),
-            inputState = nameInput,
-            saveInput = { nameInput = it })
+            inputState = currentName,
+            saveInput = { updateCurrentName(it) })
         NumberInput(
             title = stringResource(R.string.add_product_amount),
-            inputState = amountInput,
-            saveInput = { amountInput = it }
+            inputState = currentAmount,
+            saveInput = { updateCurrentAmount(it) }
         )
         TextInput(
             title = stringResource(R.string.add_product_brand),
-            inputState = brandInput,
-            saveInput = { brandInput = it }
+            inputState = currentBrand,
+            saveInput = { updateCurrentBrand(it) }
         )
         CustomOutlinedButton(
             text = stringResource(R.string.add_to_cart),
-            onClick = { onAddToCart(nameInput, amountInput, brandInput) }
+            onClick = { onAddToCart(currentName, currentAmount, currentBrand) }
         )
         CartList(cart)
     }
@@ -115,6 +114,12 @@ fun CartScreenPreview() {
                 CartProduct("Agua", "5", "40"),
                 CartProduct("Milanesa", "2", "200"),
             ),
+            "Papel",
+            "1",
+            "Elite",
+            {name ->},
+            {amount ->},
+            {brand ->},
             {name, amount, brand ->}
         )
     }

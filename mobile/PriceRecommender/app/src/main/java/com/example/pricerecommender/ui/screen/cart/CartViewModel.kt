@@ -23,4 +23,28 @@ class CartViewModel @Inject constructor(): ViewModel() {
         }
     }
 
+    fun updateCurrentName(name: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentName = name
+            )
+        }
+    }
+
+    fun updateCurrentAmount(amount: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentAmount = amount
+            )
+        }
+    }
+
+    fun updateCurrentBrand(brand: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentBrand = brand
+            )
+        }
+    }
+
 }

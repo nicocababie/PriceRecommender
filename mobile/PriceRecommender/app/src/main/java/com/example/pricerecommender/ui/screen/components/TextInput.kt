@@ -1,7 +1,6 @@
 package com.example.pricerecommender.ui.screen.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -28,30 +27,26 @@ fun TextInput(
 ) {
     var input by remember { mutableStateOf(inputState) }
     val keyboardController = LocalSoftwareKeyboardController.current
-    Column {
-        Text(
-            text = title
-        )
-        OutlinedTextField(
-            value = input,
-            onValueChange = {
-                input = it
+    OutlinedTextField(
+        label = { Text(text = title) },
+        value = input,
+        onValueChange = {
+            input = it
+            saveInput(input)
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done,
+            capitalization = KeyboardCapitalization.Sentences
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
                 saveInput(input)
-                            },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done,
-                capitalization = KeyboardCapitalization.Sentences
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    saveInput(input)
-                    keyboardController?.hide()
-                }
-            ),
-            modifier = Modifier.fillMaxWidth(0.7f)
-        )
-    }
+                keyboardController?.hide()
+            }
+        ),
+        modifier = Modifier.fillMaxWidth(0.7f)
+    )
 }
 
 @Preview(showBackground = true)
@@ -61,7 +56,7 @@ fun PurchaseInputPreview() {
         Box(
             modifier = Modifier.fillMaxSize()
         ){
-            TextInput(title = "Store name", "", {})
+            TextInput(title = "Name", "", {})
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.example.pricerecommender.ui.screen.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -27,31 +26,28 @@ fun NumberInput(
 ) {
     var input by remember { mutableStateOf(inputState) }
     val keyboardController = LocalSoftwareKeyboardController.current
-    Column {
-        Text(text = title)
-        OutlinedTextField(
-            value = input,
-            onValueChange = { newValue ->
-                if (newValue.matches(Regex("^\\d*\\.?\\d*\$"))) {
-                    input = newValue
-                    saveInput(input)
-                }
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    saveInput(input)
-                    keyboardController?.hide()
-                }
-            ),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(0.7f),
-
-        )
-    }
+    OutlinedTextField(
+        label = { Text(text = title) },
+        value = input,
+        onValueChange = { newValue ->
+            if (newValue.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                input = newValue
+                saveInput(input)
+            }
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                saveInput(input)
+                keyboardController?.hide()
+            }
+        ),
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(0.7f)
+    )
 }
 
 @Preview(showBackground = true)

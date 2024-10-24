@@ -14,5 +14,6 @@ enum class PriceRecommenderScreen(
     AddressManualEntryScreen(R.string.manual_entry),
     SelectProductsScreen(R.string.select_products),
     ErrorScreen(R.string.error_screen),
-    LoadingScreen(R.string.loading_screen)
+    LoadingScreen(R.string.loading_screen),
+    StoreAddressScreen(R.string.store_address)
 }

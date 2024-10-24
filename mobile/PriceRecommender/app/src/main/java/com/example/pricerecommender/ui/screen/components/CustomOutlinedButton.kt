@@ -17,11 +17,13 @@ import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 fun CustomOutlinedButton(
     text: String,
     onClick: () -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     OutlinedButton(
         onClick = onClick,
         shape = RoundedCornerShape(4.dp),
+        enabled = enabled,
         modifier = modifier
             .fillMaxWidth(0.7f)
             .height(56.dp)

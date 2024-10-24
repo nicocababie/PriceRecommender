@@ -1,11 +1,9 @@
 package com.example.pricerecommender.ui.screen.purchase
 
 import android.content.Context
-import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,15 +11,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
 import com.example.pricerecommender.data.model.Product
-import com.example.pricerecommender.services.geocodeLocation
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
 import com.example.pricerecommender.ui.screen.components.TextInput
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
@@ -44,12 +40,12 @@ fun AddPurchaseScreen(
     products: List<Product>,
     storeCoord: LatLng,
     updateStoreName: (String) -> Unit,
-    updateStoreAddress: (String) -> Unit,
+    onSelectStoreAddressClick: () -> Unit,
     onSelectProductsClick: () -> Unit,
     onAddPurchaseClick: (String, String, String, List<Product>, LatLng, Context) -> Unit,
-    updateStoreCoord: (LatLng) -> Unit,
 ) {
     val context = LocalContext.current
+    val enabled = storeName != "" && storeAddress != ""
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,35 +62,28 @@ fun AddPurchaseScreen(
                 inputState = storeName,
                 saveInput = { updateStoreName(it) }
             )
-            Box(
-                contentAlignment = Alignment.CenterEnd
-            ){
-                TextInput(
-                    title = stringResource(R.string.store_address),
-                    inputState = storeAddress,
-                    saveInput = { updateStoreAddress(it) }
+            if (storeAddress == ""){
+                CustomOutlinedButton(
+                    text = stringResource(R.string.select_store_address),
+                    onClick = onSelectStoreAddressClick
                 )
-                OutlinedButton(
-                    modifier = Modifier.padding(top = 22.dp),
-                    border = BorderStroke(0.dp, Color.Transparent),
-                    onClick = {
-                    geocodeLocation(context, storeAddress) { latLng ->
-                        latLng?.let {
-                            val coord = LatLng(it.latitude, it.longitude)
-                            updateStoreCoord(coord)
-                            Toast.makeText(
-                                context,
-                                "Address checked successfully",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } ?: Toast.makeText(
-                            context,
-                            "Invalid address format",
-                            Toast.LENGTH_SHORT
-                        ).show()
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(0.7f)
+                ) {
+                    Text(
+                        text = "Address: $storeAddress",
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(
+                        onClick = onSelectStoreAddressClick
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = ""
+                        )
                     }
-                }) {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "")
                 }
             }
             CustomOutlinedButton(
@@ -103,21 +92,20 @@ fun AddPurchaseScreen(
             )
         }
         Checkout(products, Modifier.weight(0.5f))
-        if (storeName != "" && storeAddress != ""){
-            CustomOutlinedButton(
-                text = stringResource(R.string.add_purchase),
-                onClick = {
-                    onAddPurchaseClick(
-                        userId,
-                        storeName,
-                        storeAddress,
-                        products,
-                        storeCoord,
-                        context
-                    )
-                }
-            )
-        }
+        CustomOutlinedButton(
+            text = stringResource(R.string.add_purchase),
+            onClick = {
+                onAddPurchaseClick(
+                    userId,
+                    storeName,
+                    storeAddress,
+                    products,
+                    storeCoord,
+                    context
+                )
+            },
+            enabled = enabled
+        )
     }
 }
 
@@ -181,8 +169,7 @@ fun AddPurchaseScreenPreview() {
             {},
             {},
             {},
-            { userId, storeName, storeAddress, products, coord, context ->},
-            {},
+            { userId, storeName, storeAddress, products, coord, context ->}
         )
     }
 }

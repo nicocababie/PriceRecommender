@@ -29,6 +29,11 @@ fun SelectProductsScreen(
     var productAmount by remember { mutableStateOf(0) }
     var productPrice by remember { mutableStateOf(0.0) }
     var productBrand by remember { mutableStateOf("") }
+    val enabled =
+            productName != "" &&
+            productAmount != 0 &&
+            productPrice != 0.0 &&
+            productBrand != ""
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,7 +82,8 @@ fun SelectProductsScreen(
                         productPrice,
                         productBrand
                     )
-                }
+                },
+                enabled = enabled
             )
             CustomOutlinedButton(
                 text = stringResource(R.string.return_to_purchase),

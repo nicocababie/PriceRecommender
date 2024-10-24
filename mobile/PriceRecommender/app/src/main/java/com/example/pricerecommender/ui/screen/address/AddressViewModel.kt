@@ -25,12 +25,6 @@ class AddressViewModel @Inject constructor(
          getAllDepartments()
      }
 
-//    _uiState.update { currentState ->
-//        currentState.copy(
-//
-//        )
-//    }
-
     fun emptyState() {
         _uiState.update { currentState ->
         currentState.copy(

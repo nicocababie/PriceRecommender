@@ -127,15 +127,36 @@ fun PriceRecommenderApp(
                     products = purchaseState.purchase.products,
                     storeCoord = purchaseState.storeCoord,
                     updateStoreName = { purchaseViewModel.updateStoreName(it) },
-                    updateStoreAddress = { purchaseViewModel.updateStoreAddress(it) },
+                    onSelectStoreAddressClick = { navController.navigate(PriceRecommenderScreen.StoreAddressScreen.name) },
                     onSelectProductsClick = { navController.navigate(PriceRecommenderScreen.SelectProductsScreen.name) },
-                    updateStoreCoord = { purchaseViewModel.updateStoreCoord(it) },
                     onAddPurchaseClick = { userId, storeName, storeAddress, products, coord, context ->
                         purchaseViewModel.addPurchase(userId, storeName, storeAddress, products, coord, context)
                         navController.popBackStack()
                     }
                 )
             }
+
+        composable(route = PriceRecommenderScreen.StoreAddressScreen.name) {
+            AddressManualEntryScreen(
+                currentAddress = purchaseState.purchase.address,
+                currentDepartment = purchaseState.currentDepartment,
+                currentCoord = purchaseState.storeCoord,
+                updateCurrentAddress = { purchaseViewModel.updateStoreAddress(it) },
+                updateCurrentDepartment = { purchaseViewModel.updateCurrentDepartment(it) },
+                updateCurrentCoord = { purchaseViewModel.updateStoreCoord(it) },
+                cameraPosition = purchaseViewModel.getCameraPosition(),
+                departments = purchaseState.departments,
+                onAddAddressClick = { address, lat, lng ->
+                    navController.popBackStack(PriceRecommenderScreen.AddPurchaseScreen.name, false)
+                },
+                onCancelClick = {
+                    navController.popBackStack(PriceRecommenderScreen.AddPurchaseScreen.name, false)
+                },
+                emptyState = {  },
+                updateCameraPosition = { latLng, zoom ->
+                    purchaseViewModel.updateCameraPosition(latLng, zoom) }
+            )
+        }
 
             composable(route = PriceRecommenderScreen.SelectProductsScreen.name) {
                 SelectProductsScreen(

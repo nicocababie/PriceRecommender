@@ -72,6 +72,7 @@ app.get('/carts/:id', async (req, res) => {await _cartController.getCart(req, re
 
 app.post('/purchases', async (req, res) => {await _purchaseController.createPurchase(req, res)});
 app.get('/purchases/:id', async (req, res) => {await _purchaseController.getPurchase(req, res)});
+app.get('/products', async (req, res) => {await _purchaseController.getProducts(req, res)});
 
 app.get('/users', async (req, res) => {await _userController.createUser(req, res)});
 

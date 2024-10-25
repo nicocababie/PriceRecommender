@@ -91,8 +91,8 @@ export class storeDataAccess implements IstoreDataAccess {
                 name: product.getDataValue("name"),
                 price: product.getDataValue("price"),
                 brand: product.getDataValue("brand"),
-                amount: 0,
-                store: ""
+                amount: -1,
+                store: "unknown"
             }
         });
     }

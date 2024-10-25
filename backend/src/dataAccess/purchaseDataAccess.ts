@@ -5,6 +5,7 @@ import Product from "../domain/product";
 import Purchase from "../domain/purchase";
 import PurchaseProduct from "../domain/PurchaseProduct";
 import { injectable } from "inversify";
+import { productDto } from "../dtos/productDto";
 
 @injectable()
 export class PurchaseDataAccess implements IpurchaseDataAccess {
@@ -154,5 +155,24 @@ export class PurchaseDataAccess implements IpurchaseDataAccess {
             throw new Error("Error retrieving purchases: " + error.message);
         }
     }
+    getAllProducts = async (amountProducts: number, offset: number): Promise<productDto[]> => {
+        try {
+            const products = await Product.findAll({ limit: amountProducts, offset: offset });
+            return products.map((product) => {
+                return {
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    brand: product.brand,
+                    amount: 0,
+                    store: ""
+                }
+            });
+        } catch (error) {
+            throw new Error("Error retrieving purchases: " + error);
+        }
+    
+    }
+    
     
 }

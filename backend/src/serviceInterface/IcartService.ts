@@ -4,4 +4,5 @@ export interface IcartService {
   overwriteCart(data: cartProductDto[], userId: string): Promise<string>;
   addToCart(data: cartProductDto[], userId: string): Promise<string>;
   getCart(userId: string): Promise<cartProductIdDto[]>;
+  getCartProducts(userId: string): Promise<cartProductDto[]>;
 }

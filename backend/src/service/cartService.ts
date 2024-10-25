@@ -5,7 +5,7 @@ import { IcartDataAccess } from '../dataAccessInterface/IcartDataAccess';
 import { cartProductDto, cartProductIdDto } from '../dtos/cartProductDto';
 import { IstoreService } from '../serviceInterface/IstoreService';
 import IstoreDataAccess from '../dataAccessInterface/IstoreDataAccess';
-import { productNameBrand } from '../dtos/productDto';
+import { productDto, productNameBrand } from '../dtos/productDto';
 
 @injectable()
 export class cartService implements IcartService {
@@ -29,6 +29,17 @@ export class cartService implements IcartService {
   }
   async getCart(userId: string): Promise<cartProductIdDto[]> {
     return await this._cartDataAccess.getCart(userId);
+
+  }
+  async getCartProducts(userId: string): Promise<cartProductDto[]> {
+    let productData : cartProductIdDto[] =  await this._cartDataAccess.getCart(userId);
+    let productsId : number[] = productData.map(e => e.productId);
+    let products : productDto[] = await this._storeDataAccess.getProducts(productsId);
+    let result : cartProductDto[] = products.map(e => {
+      let product = productData.find(p => p.productId == e.id);
+      return {id:e.id, name: e.name, brand: e.brand, amount: product?.amount || 0}
+    });
+    return result;
 
   }
 }

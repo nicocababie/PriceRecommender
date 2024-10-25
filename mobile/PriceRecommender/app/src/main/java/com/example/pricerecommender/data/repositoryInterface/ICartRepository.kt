@@ -8,7 +8,7 @@ interface ICartRepository {
         userId: String,
     )
 
-    suspend fun delete(
+    suspend fun update(
         cart: List<CartProduct>,
         userId: String,
     )
@@ -16,4 +16,6 @@ interface ICartRepository {
     suspend fun empty(
         userId: String
     )
+
+    suspend fun getCart(userId: String): List<CartProduct>
 }

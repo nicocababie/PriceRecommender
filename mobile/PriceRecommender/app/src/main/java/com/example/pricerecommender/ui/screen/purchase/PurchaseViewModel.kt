@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.model.Product
+import com.example.pricerecommender.data.model.Purchase
 import com.example.pricerecommender.data.repositoryInterface.IDepartmentRepository
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository
 import com.google.android.gms.maps.model.CameraPosition
@@ -101,9 +102,7 @@ class PurchaseViewModel @Inject constructor(
     private fun emptyState() {
         _uiState.update { currentState ->
             currentState.copy(
-                purchase = currentState.purchase.copy(
-                    address = ""
-                ),
+                purchase = Purchase("", "", emptyList()),
                 currentDepartment = "Select department",
                 storeCoord = LatLng(0.0, 0.0)
             )

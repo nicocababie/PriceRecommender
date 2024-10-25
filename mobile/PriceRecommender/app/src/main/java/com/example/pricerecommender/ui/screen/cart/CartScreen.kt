@@ -197,10 +197,10 @@ fun CartScreenPreview() {
     PriceRecommenderTheme {
         CartScreen(
             listOf(
-                CartProduct("Agua", 5, "40"),
-                CartProduct("Milanesa", 2, "200"),
-                CartProduct("Milanesa", 2, "200"),
-                CartProduct("Milanesa", 2, "200"),
+                CartProduct(null,"Agua", 5, "40"),
+                CartProduct(null,"Milanesa", 2, "200"),
+                CartProduct(null,"Milanesa", 2, "200"),
+                CartProduct(null,"Milanesa", 2, "200"),
             ),
             "",
             1,

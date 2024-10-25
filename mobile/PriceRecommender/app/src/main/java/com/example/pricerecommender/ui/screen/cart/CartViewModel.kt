@@ -33,11 +33,15 @@ class CartViewModel @Inject constructor(
         context: Context
     ) {
         val userId = _uiState.value.userId
-        val cartProduct = CartProduct(name, amount, brand)
+        val cartProduct = CartProduct(null, name, amount, brand)
         val updatedCart = _uiState.value.cart + cartProduct
         viewModelScope.launch {
             try {
-                cartRepository.add(updatedCart, userId)
+                if (_uiState.value.cart.isEmpty()) {
+                    cartRepository.add(updatedCart, userId)
+                } else {
+                    cartRepository.update(updatedCart, userId)
+                }
                 Toast.makeText(
                     context,
                     "Product added successfully",
@@ -65,11 +69,11 @@ class CartViewModel @Inject constructor(
         context: Context
     ) {
         val userId = _uiState.value.userId
-        val cartProduct = CartProduct(name, amount, brand)
+        val cartProduct = CartProduct(null, name, amount, brand)
         val updatedCart = _uiState.value.cart - cartProduct
         viewModelScope.launch {
             try {
-                cartRepository.delete(updatedCart, userId)
+                cartRepository.update(updatedCart, userId)
                 Toast.makeText(
                     context,
                     "Product deleted successfully",
@@ -101,6 +105,11 @@ class CartViewModel @Inject constructor(
                     "Cart emptied successfully",
                     Toast.LENGTH_SHORT
                 ).show()
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        cart = emptyList()
+                    )
+                }
             } catch (e: Exception) {
                 Toast.makeText(
                     context,
@@ -140,11 +149,24 @@ class CartViewModel @Inject constructor(
             preferencesRepository.userId
                 .collect { savedUserId ->
                     _uiState.update { currentState ->
-                        currentState.copy(
-                            userId = savedUserId
-                        )
+                        currentState.copy(userId = savedUserId)
                     }
+                    getCurrentCart(savedUserId)
                 }
+        }
+    }
+
+    private fun getCurrentCart(userId: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        cart = cartRepository.getCart(userId)
+                    )
+                }
+            } catch (_: Exception) {
+
+            }
         }
     }
 }

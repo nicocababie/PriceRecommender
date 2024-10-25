@@ -15,14 +15,18 @@ class CartRepository @Inject constructor(
         cartApiService.add(userId, cart)
     }
 
-    override suspend fun delete(
+    override suspend fun update(
         cart: List<CartProduct>,
         userId: String
     ) {
-        cartApiService.delete(userId, cart)
+        cartApiService.update(userId, cart)
     }
 
     override suspend fun empty(userId: String) {
-        cartApiService.delete(userId, emptyList())
+        cartApiService.update(userId, emptyList())
+    }
+
+    override suspend fun getCart(userId: String): List<CartProduct> {
+        return cartApiService.getCart(userId)
     }
 }

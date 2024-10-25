@@ -33,6 +33,16 @@ export class cartController {
       res.status(500).json("Cart operation failed");
     }
   }
+
+  getCart = async (req: Request, res: Response) => {
+    let userId = req.params.id;
+    try{
+       let result = await this._cartService.getCartProducts(userId);
+      res.status(200).json(result);
+    }catch(error){
+      res.status(404).json("Cart does not exist");
+    }
+  }
 }
 
 export default cartController;

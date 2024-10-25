@@ -68,6 +68,7 @@ app.use(cors({
 
 app.put('/carts/:id', async (req, res) => {await _cartController.overwriteCart(req, res)});
 app.post('/carts/:id', async (req, res) => {await _cartController.addToCart(req, res)});
+app.get('/carts/:id', async (req, res) => {await _cartController.getCart(req, res)});
 
 app.post('/purchases', async (req, res) => {await _purchaseController.createPurchase(req, res)});
 app.get('/purchases/:id', async (req, res) => {await _purchaseController.getPurchase(req, res)});

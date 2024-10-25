@@ -29,4 +29,7 @@
     <string name="retry">Retry</string>
     <string name="error_screen">Error</string>
     <string name="loading_screen">Loading</string>
+    <string name="delete">Delete</string>
+    <string name="cart">Cart</string>
+    <string name="empty">Empty</string>
 </resources>

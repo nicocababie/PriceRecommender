@@ -1,4 +1,4 @@
-package com.example.pricerecommender.ui.screen.purchase
+package com.example.pricerecommender.ui.screen.product
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -39,9 +39,9 @@ import com.example.pricerecommender.ui.screen.cart.CartViewModel
 import com.example.pricerecommender.ui.screen.home.HomeScreen
 import com.example.pricerecommender.ui.screen.home.HomeViewModel
 import com.example.pricerecommender.ui.screen.product.ProductViewModel
+import com.example.pricerecommender.ui.screen.product.SelectProductsScreen
 import com.example.pricerecommender.ui.screen.purchase.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.purchase.PurchaseViewModel
-import com.example.pricerecommender.ui.screen.purchase.SelectProductsScreen
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 import com.example.pricerecommender.ui.utils.PriceRecommenderScreen
 
@@ -192,9 +192,13 @@ fun PriceRecommenderApp(
                     updateCurrentName = { cartViewModel.updateCurrentName(it) },
                     updateCurrentAmount = { cartViewModel.updateCurrentAmount(it) },
                     updateCurrentBrand = { cartViewModel.updateCurrentBrand(it) },
-                    onAddToCart = { name, amount, brand ->
-                        cartViewModel.updateCart(name, amount, brand)
-                    }
+                    onAddProductToCart = { name, amount, brand, context ->
+                        cartViewModel.addProductToCart(name, amount, brand, context)
+                    },
+                    onDeleteProductFromCart = { name, amount, brand, context ->
+                        cartViewModel.deleteProductFromCart(name, amount, brand, context)
+                    },
+                    onEmptyCart = { context -> cartViewModel.emptyCart(context) }
                 )
             }
 

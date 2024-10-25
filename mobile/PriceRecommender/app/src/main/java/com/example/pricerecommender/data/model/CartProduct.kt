@@ -1,7 +1,11 @@
 package com.example.pricerecommender.data.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class CartProduct(
-    val name: String,
-    val amount: String,
-    val brand: String,
+    @SerialName("name") val name: String,
+    @SerialName("amount") val amount: Int,
+    @SerialName("brand") val  brand: String,
 )

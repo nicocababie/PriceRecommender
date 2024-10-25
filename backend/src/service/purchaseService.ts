@@ -43,5 +43,10 @@ export class purchaseService implements IpurchaseService {
         return result;
     }
 
+    getAllProducts = async (amountProducts: number, offset : number) => {
+        let result = await this._purchaseDataAccess.getAllProducts(amountProducts, offset);
+        return result;
+    }
+
 
 }

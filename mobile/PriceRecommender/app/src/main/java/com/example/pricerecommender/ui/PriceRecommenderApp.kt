@@ -173,6 +173,7 @@ fun PriceRecommenderApp(
                     updateCurrentBrand = { productViewModel.updateCurrentBrand(it) },
                     onAddProductClick = { name, amount, price, brand ->
                         purchaseViewModel.updateProductsList(name, amount, price, brand)
+                        productViewModel.emptyState()
                         navController.popBackStack()
                     },
                     onReturnToPurchaseClick = { navController.popBackStack() }
@@ -186,6 +187,7 @@ fun PriceRecommenderApp(
             composable(route = PriceRecommenderScreen.CartScreen.name) {
                 CartScreen(
                     cart = cartState.cart,
+                    availableProducts = productState.products,
                     currentName = cartState.currentName,
                     currentAmount = cartState.currentAmount,
                     currentBrand = cartState.currentBrand,
@@ -194,11 +196,15 @@ fun PriceRecommenderApp(
                     updateCurrentBrand = { cartViewModel.updateCurrentBrand(it) },
                     onAddProductToCart = { name, amount, brand, context ->
                         cartViewModel.addProductToCart(name, amount, brand, context)
+                        cartViewModel.emptyState()
                     },
-                    onDeleteProductFromCart = { name, amount, brand, context ->
-                        cartViewModel.deleteProductFromCart(name, amount, brand, context)
+                    onDeleteProductFromCart = { product, context ->
+                        cartViewModel.deleteProductFromCart(product, context)
                     },
-                    onEmptyCart = { context -> cartViewModel.emptyCart(context) }
+                    onEmptyCart = { context -> cartViewModel.emptyCart(context) },
+                    emptyState = {
+                        cartViewModel.emptyState()
+                    }
                 )
             }
 

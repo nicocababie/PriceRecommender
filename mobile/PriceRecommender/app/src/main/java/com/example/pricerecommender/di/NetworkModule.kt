@@ -1,13 +1,16 @@
 package com.example.pricerecommender.di
 
 import com.example.pricerecommender.data.repository.CartRepository
+import com.example.pricerecommender.data.repository.ProductRepository
 import com.example.pricerecommender.data.repository.PurchaseRepository
 import com.example.pricerecommender.data.repository.UserRepository
 import com.example.pricerecommender.data.repositoryInterface.ICartRepository
+import com.example.pricerecommender.data.repositoryInterface.IProductRepository
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository
 import com.example.pricerecommender.data.repositoryInterface.IUserRepository
 import com.example.pricerecommender.env
 import com.example.pricerecommender.network.CartApiService
+import com.example.pricerecommender.network.ProductApiService
 import com.example.pricerecommender.network.PurchaseApiService
 import com.example.pricerecommender.network.UserApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -60,6 +63,12 @@ object NetworkModule {
     }
 
     @Provides
+    @Singleton
+    fun provideProductApiService(retrofit: Retrofit): ProductApiService {
+        return retrofit.create(ProductApiService::class.java)
+    }
+
+    @Provides
     fun provideUserRepository(userApiService: UserApiService): IUserRepository =
         UserRepository(userApiService)
 
@@ -70,4 +79,8 @@ object NetworkModule {
     @Provides
     fun provideCartRepository(cartApiService: CartApiService): ICartRepository =
         CartRepository(cartApiService)
+
+    @Provides
+    fun provideProductRepository(productApiService: ProductApiService): IProductRepository =
+        ProductRepository(productApiService)
 }

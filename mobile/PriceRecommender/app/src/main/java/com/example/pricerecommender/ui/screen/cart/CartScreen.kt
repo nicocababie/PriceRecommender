@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,11 +17,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,14 +42,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
 import com.example.pricerecommender.data.model.CartProduct
+import com.example.pricerecommender.data.model.ProductResponse
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
-import com.example.pricerecommender.ui.screen.components.NumberInput
-import com.example.pricerecommender.ui.screen.components.TextInput
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun CartScreen(
     cart: List<CartProduct>,
+    availableProducts: ProductResponse,
     currentName: String,
     currentAmount: Int,
     currentBrand: String,
@@ -46,13 +57,16 @@ fun CartScreen(
     updateCurrentAmount: (Int) -> Unit,
     updateCurrentBrand: (String) -> Unit,
     onAddProductToCart: (String, Int, String, Context) -> Unit,
-    onDeleteProductFromCart: (String, Int, String, Context) -> Unit,
-    onEmptyCart: (Context) -> Unit
+    onDeleteProductFromCart: (CartProduct, Context) -> Unit,
+    onEmptyCart: (Context) -> Unit,
+    emptyState: () -> Unit
 ) {
     val context = LocalContext.current
-    val enabled = currentName != "" &&
+    var isNameDropdownExpanded by remember { mutableStateOf(false) }
+    var isBrandDropdownExpanded by remember { mutableStateOf(false) }
+    val enabled = currentName != "Name" &&
             currentAmount != 0 &&
-            currentBrand != ""
+            currentBrand != "Brand"
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,39 +75,183 @@ fun CartScreen(
             .fillMaxSize()
             .padding(vertical = 18.dp)
     ){
-        TextInput(
-            title = stringResource(R.string.add_product_name),
-            inputState = currentName,
-            saveInput = { updateCurrentName(it) })
-        NumberInput(
-            title = stringResource(R.string.add_product_amount),
-            inputState = currentAmount.toString(),
-            saveInput = { input ->
-                val productAmount = if (input.isNotEmpty()) input.toInt() else 0
-                updateCurrentAmount(productAmount)
+        OutlinedButton(
+            onClick = { isNameDropdownExpanded = !isNameDropdownExpanded },
+            shape = RoundedCornerShape(4.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .height(56.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Text(
+                    text = currentName
+                )
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = stringResource(R.string.add_product_name)
+                )
             }
-        )
-        TextInput(
-            title = stringResource(R.string.add_product_brand),
-            inputState = currentBrand,
-            saveInput = { updateCurrentBrand(it) }
-        )
-        CustomOutlinedButton(
-            text = stringResource(R.string.add_to_cart),
-            enabled = enabled,
-            onClick = { onAddProductToCart(currentName, currentAmount, currentBrand, context) }
-        )
-        CartList(
-            cart = cart,
-            onEmptyCart = onEmptyCart,
-            onDeleteProductFromCart = onDeleteProductFromCart,
-            context = context,
-            modifier = Modifier.weight(0.5f)
-        )
-        CustomOutlinedButton(
-            text = "Return to home",
-            onClick = { /*TODO*/ }
-        )
+        }
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            DropdownMenu(
+                expanded = isNameDropdownExpanded,
+                onDismissRequest = { isNameDropdownExpanded = false },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp)
+            ) {
+                val productNames = availableProducts.data.map { it.name }
+                val filteredNames = if (currentBrand != "Brand") {
+                    availableProducts.data
+                        .filter { it.brand == currentBrand }
+                        .map { it.name }
+                } else {
+                    productNames
+                }
+                filteredNames.forEach {
+                    OutlinedButton(
+                        onClick = {
+                            updateCurrentName(it)
+                            isNameDropdownExpanded = false
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        border = BorderStroke(0.dp, Color.Transparent)
+                    ) {
+                        Text(
+                            text = it,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+        }
+
+        if (!isNameDropdownExpanded){
+            OutlinedButton(
+                onClick = { isBrandDropdownExpanded = !isBrandDropdownExpanded },
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(56.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Text(
+                        text = currentBrand
+                    )
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = stringResource(R.string.add_product_brand)
+                    )
+                }
+            }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                DropdownMenu(
+                    expanded = isBrandDropdownExpanded,
+                    onDismissRequest = { isBrandDropdownExpanded = false },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 400.dp)
+                ) {
+                    val productBrands = availableProducts.data.map { it.brand }
+                    val filteredBrands = if (currentName != "Name") {
+                        availableProducts.data
+                            .filter { it.name == currentName }
+                            .map { it.brand }
+                    } else {
+                        productBrands
+                    }
+                    filteredBrands.forEach {
+                        OutlinedButton(
+                            onClick = {
+                                updateCurrentBrand(it)
+                                isBrandDropdownExpanded = false
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            border = BorderStroke(0.dp, Color.Transparent)
+                        ) {
+                            Text(
+                                text = it,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
+            }
+            if (!isBrandDropdownExpanded){
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .height(70.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.add_product_amount),
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                    )
+                    IconButton(
+                        onClick = { if (currentAmount != 0) updateCurrentAmount(currentAmount.dec()) },
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = stringResource(R.string.decrease_amount)
+                        )
+                    }
+                    Text(
+                        text = currentAmount.toString(),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    IconButton(
+                        onClick = { updateCurrentAmount(currentAmount.inc()) },
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowUp,
+                            contentDescription = stringResource(R.string.increase_amount)
+                        )
+                    }
+                }
+                CustomOutlinedButton(
+                    text = stringResource(R.string.clear_selection),
+                    onClick = emptyState
+                )
+                CustomOutlinedButton(
+                    text = stringResource(R.string.add_to_cart),
+                    enabled = enabled,
+                    onClick = {
+                        onAddProductToCart(
+                            currentName,
+                            currentAmount,
+                            currentBrand,
+                            context
+                        )
+                    }
+                )
+                CartList(
+                    cart = cart,
+                    onEmptyCart = onEmptyCart,
+                    onDeleteProductFromCart = onDeleteProductFromCart,
+                    context = context,
+                    modifier = Modifier.weight(0.5f)
+                )
+            }
+        }
     }
 }
 
@@ -101,7 +259,7 @@ fun CartScreen(
 fun CartList(
     cart: List<CartProduct>,
     onEmptyCart: (Context) -> Unit,
-    onDeleteProductFromCart: (String, Int, String, Context) -> Unit,
+    onDeleteProductFromCart: (CartProduct, Context) -> Unit,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -150,7 +308,7 @@ fun CartList(
 @Composable
 fun CartItem(
     product: CartProduct,
-    onDeleteProductFromCart: (String, Int, String, Context) -> Unit,
+    onDeleteProductFromCart: (CartProduct, Context) -> Unit,
     context: Context,
 ) {
     Card(
@@ -174,9 +332,7 @@ fun CartItem(
             OutlinedIconButton(
                 onClick = {
                     onDeleteProductFromCart(
-                        product.name,
-                        product.amount,
-                        product.brand,
+                        product,
                         context
                     )
                           },
@@ -202,15 +358,17 @@ fun CartScreenPreview() {
                 CartProduct(null,"Milanesa", 2, "200"),
                 CartProduct(null,"Milanesa", 2, "200"),
             ),
-            "",
+            ProductResponse(emptyList()),
+            "Name",
             1,
-            "Elite",
+            "Brand",
             {name ->},
             {amount ->},
             {brand ->},
             {name, amount, brand, context ->},
-            {name, amount, brand, context ->},
-            {context ->}
+            {product, context ->},
+            {context ->},
+            {}
         )
     }
 }

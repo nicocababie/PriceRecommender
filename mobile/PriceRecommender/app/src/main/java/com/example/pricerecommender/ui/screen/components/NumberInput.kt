@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,11 @@ fun NumberInput(
 ) {
     var input by remember { mutableStateOf(inputState) }
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(inputState) {
+        input = inputState
+    }
+
     OutlinedTextField(
         label = { Text(text = title) },
         value = input,

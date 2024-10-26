@@ -5,7 +5,7 @@ import com.example.pricerecommender.data.model.CartProduct
 data class CartUIState(
     val userId: String = "",
     val cart: List<CartProduct> = emptyList(),
-    val currentName: String = "",
+    val currentName: String = "Name",
     val currentAmount: Int = 0,
-    val currentBrand: String = "",
+    val currentBrand: String = "Brand",
 )

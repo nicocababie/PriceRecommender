@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.model.CartProduct
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.ICartRepository
+import com.example.pricerecommender.data.repositoryInterface.IProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CartViewModel @Inject constructor(
     private val cartRepository: ICartRepository,
+    private val productRepository: IProductRepository,
     private val preferencesRepository: PreferencesRepository,
 ): ViewModel() {
     private val _uiState = MutableStateFlow(CartUIState())
@@ -33,25 +35,42 @@ class CartViewModel @Inject constructor(
         context: Context
     ) {
         val userId = _uiState.value.userId
-        val cartProduct = CartProduct(null, name, amount, brand)
-        val updatedCart = _uiState.value.cart + cartProduct
+        val newProduct = CartProduct(null, name, amount, brand)
         viewModelScope.launch {
             try {
-                if (_uiState.value.cart.isEmpty()) {
-                    cartRepository.add(updatedCart, userId)
-                } else {
+                val cart = _uiState.value.cart
+                if (cart.isEmpty()) {
+                    val newCart = _uiState.value.cart + newProduct
+                    cartRepository.add(newCart, userId)
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            cart = newCart
+                        )
+                    }
+                }
+                else if (cart.map { it.name }.contains(name)) {
+                    val updatedCart = cart.filter { it.name != name } + newProduct
                     cartRepository.update(updatedCart, userId)
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            cart = updatedCart
+                        )
+                    }
+                }
+                else {
+                    val newCart = _uiState.value.cart + newProduct
+                    cartRepository.update(newCart, userId)
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            cart = newCart
+                        )
+                    }
                 }
                 Toast.makeText(
                     context,
                     "Product added successfully",
                     Toast.LENGTH_SHORT
                 ).show()
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        cart = updatedCart
-                    )
-                }
             } catch (e: Exception) {
                 Toast.makeText(
                     context,
@@ -63,14 +82,11 @@ class CartViewModel @Inject constructor(
     }
 
     fun deleteProductFromCart(
-        name: String,
-        amount: Int,
-        brand: String,
+        product: CartProduct,
         context: Context
     ) {
         val userId = _uiState.value.userId
-        val cartProduct = CartProduct(null, name, amount, brand)
-        val updatedCart = _uiState.value.cart - cartProduct
+        val updatedCart = _uiState.value.cart - product
         viewModelScope.launch {
             try {
                 cartRepository.update(updatedCart, userId)
@@ -140,6 +156,16 @@ class CartViewModel @Inject constructor(
         _uiState.update { currentState ->
             currentState.copy(
                 currentBrand = brand
+            )
+        }
+    }
+
+    fun emptyState() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentName = "Name",
+                currentAmount = 0,
+                currentBrand = "Brand"
             )
         }
     }

@@ -32,4 +32,7 @@
     <string name="delete">Delete</string>
     <string name="cart">Cart</string>
     <string name="empty">Empty</string>
+    <string name="clear_selection">Clear selection</string>
+    <string name="decrease_amount">Decrease amount</string>
+    <string name="increase_amount">Increase amount</string>
 </resources>

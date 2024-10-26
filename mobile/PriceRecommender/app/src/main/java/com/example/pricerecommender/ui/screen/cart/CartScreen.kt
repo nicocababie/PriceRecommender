@@ -18,11 +18,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
@@ -43,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
 import com.example.pricerecommender.data.model.CartProduct
 import com.example.pricerecommender.data.model.ProductResponse
+import com.example.pricerecommender.ui.screen.components.Counter
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
@@ -107,7 +106,7 @@ fun CartScreen(
                     .fillMaxWidth()
                     .heightIn(max = 400.dp)
             ) {
-                val productNames = availableProducts.data.map { it.name }
+                val productNames = availableProducts.data.map { it.name }.distinct()
                 val filteredNames = if (currentBrand != "Brand") {
                     availableProducts.data
                         .filter { it.brand == currentBrand }
@@ -167,7 +166,7 @@ fun CartScreen(
                         .fillMaxWidth()
                         .heightIn(max = 400.dp)
                 ) {
-                    val productBrands = availableProducts.data.map { it.brand }
+                    val productBrands = availableProducts.data.map { it.brand }.distinct()
                     val filteredBrands = if (currentName != "Name") {
                         availableProducts.data
                             .filter { it.name == currentName }
@@ -194,39 +193,11 @@ fun CartScreen(
                 }
             }
             if (!isBrandDropdownExpanded){
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .height(70.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.add_product_amount),
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                    )
-                    IconButton(
-                        onClick = { if (currentAmount != 0) updateCurrentAmount(currentAmount.dec()) },
-                        modifier = Modifier.align(Alignment.CenterStart)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = stringResource(R.string.decrease_amount)
-                        )
-                    }
-                    Text(
-                        text = currentAmount.toString(),
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                    IconButton(
-                        onClick = { updateCurrentAmount(currentAmount.inc()) },
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
-                            contentDescription = stringResource(R.string.increase_amount)
-                        )
-                    }
-                }
+                Counter(
+                    currentAmount = currentAmount,
+                    onDecrementClick = { if (currentAmount != 0) updateCurrentAmount(currentAmount.dec()) },
+                    onIncrementClick = { updateCurrentAmount(currentAmount.inc()) }
+                )
                 CustomOutlinedButton(
                     text = stringResource(R.string.clear_selection),
                     onClick = emptyState

@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pricerecommender.R
+import com.example.pricerecommender.ui.screen.components.Counter
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
 import com.example.pricerecommender.ui.screen.components.NumberInput
 import com.example.pricerecommender.ui.screen.components.TextInput
@@ -43,20 +44,13 @@ fun SelectProductsScreen(
             .padding(vertical = 18.dp)
     ) {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             TextInput(
                 title = stringResource(R.string.add_product_name),
                 inputState = currentName,
                 saveInput = { updateCurrentName(it) }
-            )
-            NumberInput(
-                title = stringResource(R.string.add_product_amount),
-                inputState = currentAmount.toString(),
-                saveInput = { input ->
-                    val productAmount = if (input.isNotEmpty()) input.toInt() else 0
-                    updateCurrentAmount(productAmount)
-                }
             )
             NumberInput(
                 title = stringResource(R.string.add_product_price),
@@ -70,6 +64,11 @@ fun SelectProductsScreen(
                 title = stringResource(R.string.add_product_brand),
                 inputState = currentBrand,
                 saveInput = { updateCurrentBrand(it) }
+            )
+            Counter(
+                currentAmount = currentAmount,
+                onDecrementClick = { if (currentAmount != 0) updateCurrentAmount(currentAmount.dec()) },
+                onIncrementClick = { updateCurrentAmount(currentAmount.inc()) }
             )
         }
         Column(

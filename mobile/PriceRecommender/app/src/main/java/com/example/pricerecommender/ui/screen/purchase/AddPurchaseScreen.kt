@@ -34,17 +34,18 @@ import com.google.android.gms.maps.model.LatLng
 
 @Composable
 fun AddPurchaseScreen(
+    purchaseState: PurchaseUIState,
     userId: String,
-    storeName: String,
-    storeAddress: String,
-    products: List<Product>,
-    storeCoord: LatLng,
     updateStoreName: (String) -> Unit,
     onSelectStoreAddressClick: () -> Unit,
     onSelectProductsClick: () -> Unit,
     onAddPurchaseClick: (String, String, String, List<Product>, LatLng, Context) -> Unit,
 ) {
     val context = LocalContext.current
+    val storeName = purchaseState.purchase.name
+    val storeAddress = purchaseState.purchase.address
+    val products = purchaseState.purchase.products
+    val storeCoord = purchaseState.storeCoord
     val enabled = storeName != "" && storeAddress != ""
 
     Column(
@@ -156,16 +157,8 @@ fun Checkout(
 fun AddPurchaseScreenPreview() {
     PriceRecommenderTheme {
         AddPurchaseScreen(
+            PurchaseUIState(),
             "",
-            "La Colonial",
-            "Osorio 1234",
-            listOf(
-                Product("Agua", 5, 40.0, "Salus", "L"),
-                Product("Milanesa", 5, 40.0, "Schneck", "L"),
-                Product("Milanesa", 5, 40.0, "Schneck", "L"),
-                Product("Milanesa", 5, 40.0, "Schneck", "L")
-            ),
-            LatLng(0.0,0.0),
             {},
             {},
             {},

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.model.CartProduct
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.ICartRepository
-import com.example.pricerecommender.data.repositoryInterface.IProductRepository
+import com.example.pricerecommender.ui.ApiUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -169,7 +169,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    private fun getCurrentUserId() {
+    fun getCurrentUserId() {
         viewModelScope.launch {
             preferencesRepository.userId
                 .collect { savedUserId ->
@@ -184,13 +184,17 @@ class CartViewModel @Inject constructor(
     private fun getCurrentCart(userId: String) {
         viewModelScope.launch {
             try {
+                val cart = cartRepository.getCart(userId)
                 _uiState.update { currentState ->
                     currentState.copy(
-                        cart = cartRepository.getCart(userId)
+                        cart = cart,
+                        apiState = ApiUIState.Success(cart)
                     )
                 }
-            } catch (_: Exception) {
-
+            } catch (e: Exception) {
+                _uiState.update { currentState ->
+                    currentState.copy(apiState = ApiUIState.Error(e))
+                }
             }
         }
     }

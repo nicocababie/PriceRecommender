@@ -28,27 +28,46 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pricerecommender.data.model.Product
 import com.example.pricerecommender.data.model.PurchaseData
-import com.example.pricerecommender.data.model.PurchaseReport
+import com.example.pricerecommender.ui.ApiUIState
+import com.example.pricerecommender.ui.screen.api.ErrorScreen
+import com.example.pricerecommender.ui.screen.api.LoadingScreen
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun PurchasesReportScreen(
-    report: PurchaseReport,
-    onPurchaseClick: (PurchaseData) -> Unit
+    uiState: PurchaseReportUIState,
+    onPurchaseClick: (PurchaseData) -> Unit,
+    onRetryClick: () -> Unit
 ) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .padding(top = 8.dp)
-            .fillMaxSize()
-    ){
-        items(report.data) { purchase ->
-            PurchaseItem(
-                purchase
-            ) { onPurchaseClick(purchase) }
+    when (uiState.apiState) {
+        is ApiUIState.Loading -> {
+            LoadingScreen()
+        }
+        is ApiUIState.Error -> {
+            val errorState = uiState.apiState
+            ErrorScreen(
+                message = errorState.exception.message ?: errorState.defaultMessage,
+                onRetry = onRetryClick
+            )
+        }
+        is ApiUIState.Success -> {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxSize()
+            ) {
+                items(uiState.report.data) { purchase ->
+                    PurchaseItem(
+                        purchase,
+                        onPurchaseClick = onPurchaseClick
+                    )
+                }
+            }
         }
     }
 }
+
 
 @Composable
 fun PurchaseItem(
@@ -129,32 +148,9 @@ fun PurchaseItemPreview() {
 @Composable
 fun PurchaseReportScreenPreview() {
     PriceRecommenderTheme {
-        PurchasesReportScreen(report = PurchaseReport(
-            message = "",
-            data = listOf(
-                PurchaseData(
-                    storeName = "Tienda Inglesa",
-                    storeAddress = "Montevideo Shopping",
-                    date = "27/10/2024",
-                    products = listOf(
-                        Product(
-                            name = "Yerba",
-                            amount = 2,
-                            brand = "Canarias",
-                            price = 200.0,
-                            store = ""
-                        ),
-                        Product(
-                            name = "Agua",
-                            amount = 5,
-                            brand = "Salus",
-                            price = 50.0,
-                            store = ""
-                        )
-                    )
-                )
-            )
-        ),
+        PurchasesReportScreen(
+            uiState = PurchaseReportUIState(),
+            {},
             {})
     }
 }

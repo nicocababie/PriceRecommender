@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.model.PurchaseData
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository
+import com.example.pricerecommender.ui.ApiUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,13 +48,17 @@ class PurchaseReportViewModel @Inject constructor(
     fun getReport(userId: String) {
         viewModelScope.launch {
             try {
+                val report = purchaseRepository.getReport(userId)
                 _uiState.update { currentState ->
                     currentState.copy(
-                        report = purchaseRepository.getReport(userId)
+                        report = purchaseRepository.getReport(userId),
+                        apiState = ApiUIState.Success(report)
                     )
                 }
-            } catch (_: Exception) {
-
+            } catch (e: Exception) {
+                _uiState.update { currentState ->
+                    currentState.copy(apiState = ApiUIState.Error(e))
+                }
             }
         }
     }

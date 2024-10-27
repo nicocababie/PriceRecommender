@@ -1,6 +1,7 @@
 package com.example.pricerecommender.ui.screen.cart
 
 import com.example.pricerecommender.data.model.CartProduct
+import com.example.pricerecommender.ui.ApiUIState
 
 data class CartUIState(
     val userId: String = "",
@@ -8,4 +9,5 @@ data class CartUIState(
     val currentName: String = "Name",
     val currentAmount: Int = 0,
     val currentBrand: String = "Brand",
+    val apiState: ApiUIState<List<CartProduct>> = ApiUIState.Loading
 )

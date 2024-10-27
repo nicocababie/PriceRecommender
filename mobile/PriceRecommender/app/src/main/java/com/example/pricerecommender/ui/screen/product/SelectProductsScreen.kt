@@ -19,10 +19,7 @@ import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun SelectProductsScreen(
-    currentName: String,
-    currentAmount: Int,
-    currentPrice: Double,
-    currentBrand: String,
+    productState: ProductUIState,
     updateCurrentName: (String) -> Unit,
     updateCurrentAmount: (Int) -> Unit,
     updateCurrentPrice: (Double) -> Unit,
@@ -30,6 +27,10 @@ fun SelectProductsScreen(
     onAddProductClick: (String, Int, Double, String) -> Unit,
     onReturnToPurchaseClick: () -> Unit
 ) {
+    val currentName = productState.currentName
+    val currentAmount = productState.currentAmount
+    val currentPrice = productState.currentPrice
+    val currentBrand = productState.currentBrand
     val enabled =
             currentName != "" &&
             currentAmount != 0 &&
@@ -99,10 +100,7 @@ fun SelectProductsScreen(
 fun SelectProductsScreenPreview() {
     PriceRecommenderTheme {
         SelectProductsScreen(
-            "Cereales",
-            2,
-            80.0,
-            "Kellogs",
+            ProductUIState(),
             {},
             {},
             {},

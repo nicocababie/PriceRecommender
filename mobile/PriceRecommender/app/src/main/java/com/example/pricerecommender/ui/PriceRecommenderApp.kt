@@ -86,37 +86,22 @@ fun PriceRecommenderApp(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = PriceRecommenderScreen.HomeScreen.name) {
-                when (homeState.apiState) {
-                    is ApiUIState.Loading -> {
-                        LoadingScreen()
-                    }
-                    is ApiUIState.Error -> {
-                        val errorState = homeState.apiState as ApiUIState.Error
-                        ErrorScreen(
-                            message = errorState.exception.message ?: errorState.defaultMessage,
-                            onRetry = { homeViewModel.getCurrentUserId() }
-                        )
-                    }
-                    is ApiUIState.Success -> {
-                        HomeScreen(
-                            cartState.cart.size,
-                            homeState.currentRange,
-                            homeState.currentAddress,
-                            homeState.addresses,
-                            onAddAddressClick = { navController.navigate(PriceRecommenderScreen.AddressManualEntryScreen.name) },
-                            onSelectAddress = { homeViewModel.updateCurrentAddress(it) },
-                            onDeleteAddress = { homeViewModel.deleteAddress(it) },
-                            onCheckBestRouteClick = { navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name) },
-                            onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) },
-                            onSavingsReportClick = {
-                                purchaseReportViewModel.getReport(purchaseReportState.userId)
-                                navController.navigate(PriceRecommenderScreen.PurchasesReportScreen.name)
-                                                   },
-                            onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) },
-                            onRangeSelected = { homeViewModel.updateCurrentRange(it) }
-                        )
-                    }
-                }
+                HomeScreen(
+                    homeState,
+                    cartState,
+                    onAddAddressClick = { navController.navigate(PriceRecommenderScreen.AddressManualEntryScreen.name) },
+                    onSelectAddress = { homeViewModel.updateCurrentAddress(it) },
+                    onDeleteAddress = { homeViewModel.deleteAddress(it) },
+                    onCheckBestRouteClick = { navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name) },
+                    onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) },
+                    onSavingsReportClick = {
+                        purchaseReportViewModel.getReport(purchaseReportState.userId)
+                        navController.navigate(PriceRecommenderScreen.PurchasesReportScreen.name)
+                    },
+                    onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) },
+                    onRangeSelected = { homeViewModel.updateCurrentRange(it) },
+                    onRetryClick = { homeViewModel.getCurrentUserId() }
+                )
             }
 
             composable(route = PriceRecommenderScreen.CheckBestRouteScreen.name) {
@@ -131,11 +116,8 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.AddPurchaseScreen.name) {
                 AddPurchaseScreen(
+                    purchaseState = purchaseState,
                     userId = homeState.userId,
-                    storeName = purchaseState.purchase.name,
-                    storeAddress = purchaseState.purchase.address,
-                    products = purchaseState.purchase.products,
-                    storeCoord = purchaseState.storeCoord,
                     updateStoreName = { purchaseViewModel.updateStoreName(it) },
                     onSelectStoreAddressClick = { navController.navigate(PriceRecommenderScreen.StoreAddressScreen.name) },
                     onSelectProductsClick = { navController.navigate(PriceRecommenderScreen.SelectProductsScreen.name) },
@@ -170,10 +152,7 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.SelectProductsScreen.name) {
                 SelectProductsScreen(
-                    currentName = productState.currentName,
-                    currentAmount = productState.currentAmount,
-                    currentPrice = productState.currentPrice,
-                    currentBrand = productState.currentBrand,
+                    productState = productState,
                     updateCurrentName = { productViewModel.updateCurrentName(it) },
                     updateCurrentAmount = { productViewModel.updateCurrentAmount(it) },
                     updateCurrentPrice = { productViewModel.updateCurrentPrice(it) },
@@ -189,11 +168,12 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.PurchasesReportScreen.name) {
                 PurchasesReportScreen(
-                    report = purchaseReportState.report,
+                    uiState = purchaseReportState,
                     onPurchaseClick = {
                         purchaseReportViewModel.updateCurrentPurchase(it)
                         navController.navigate(PriceRecommenderScreen.SelectedPurchaseScreen.name)
-                    }
+                    },
+                    onRetryClick = { purchaseReportViewModel.getReport(purchaseReportState.userId) }
                 )
             }
 
@@ -203,11 +183,8 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.CartScreen.name) {
                 CartScreen(
-                    cart = cartState.cart,
+                    cartState = cartState,
                     availableProducts = productState.products,
-                    currentName = cartState.currentName,
-                    currentAmount = cartState.currentAmount,
-                    currentBrand = cartState.currentBrand,
                     updateCurrentName = { cartViewModel.updateCurrentName(it) },
                     updateCurrentAmount = { cartViewModel.updateCurrentAmount(it) },
                     updateCurrentBrand = { cartViewModel.updateCurrentBrand(it) },
@@ -221,7 +198,8 @@ fun PriceRecommenderApp(
                     onEmptyCart = { context -> cartViewModel.emptyCart(context) },
                     emptyState = {
                         cartViewModel.emptyState()
-                    }
+                    },
+                    onRetryClick = { cartViewModel.getCurrentUserId() }
                 )
             }
 
@@ -260,7 +238,6 @@ fun PriceRecommenderApp(
             composable(route = PriceRecommenderScreen.LoadingScreen.name) {
                 LoadingScreen()
             }
-
         }
     }
 

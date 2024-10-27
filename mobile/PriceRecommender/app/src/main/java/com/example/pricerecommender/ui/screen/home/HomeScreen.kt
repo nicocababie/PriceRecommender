@@ -23,7 +23,9 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,14 +45,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pricerecommender.R
+import com.example.pricerecommender.ui.ApiUIState
+import com.example.pricerecommender.ui.screen.api.ErrorScreen
+import com.example.pricerecommender.ui.screen.api.LoadingScreen
+import com.example.pricerecommender.ui.screen.cart.CartUIState
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun HomeScreen(
-    cartItems: Int,
-    currentRange: Float,
-    currentAddress: String,
-    addresses: List<String>,
+    homeState: HomeUIState,
+    cartState: CartUIState,
     onAddAddressClick: () -> Unit,
     onSelectAddress: (String) -> Unit,
     onDeleteAddress: (String) -> Unit,
@@ -58,83 +62,112 @@ fun HomeScreen(
     onAddPurchaseClick: () -> Unit,
     onSavingsReportClick: () -> Unit,
     onCartClick: () -> Unit,
-    onRangeSelected: (Float) -> Unit
+    onRangeSelected: (Float) -> Unit,
+    onRetryClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ){
-        RangeInput(
-            currentRange,
-            onRangeSelected
-        )
-
-        AddressInput(
-            currentAddress = currentAddress,
-            addresses = addresses,
-            onAddAddressClick= onAddAddressClick,
-            onSelectAddress = onSelectAddress,
-            onDeleteAddress = onDeleteAddress,
-            modifier = Modifier
-                .padding(vertical = 12.dp)
-        )
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier.weight(1f)
-        ) {
-            Spacer(modifier = Modifier.padding(vertical = 24.dp))
-
-            CustomButton(
-                onClick = onCheckBestRouteClick,
-                icon = Icons.Default.CheckCircle,
-                text = stringResource(R.string.check_the_best_route),
-            )
-
-            CustomButton(
-                onClick = onAddPurchaseClick,
-                icon = Icons.Default.AddCircle,
-                text = stringResource(R.string.add_purchase)
-            )
-
-            CustomButton(
-                onClick = onSavingsReportClick,
-                icon = Icons.Default.Info,
-                text = stringResource(R.string.purchases_report)
+    when (homeState.apiState) {
+        is ApiUIState.Loading -> {
+            LoadingScreen()
+        }
+        is ApiUIState.Error -> {
+            val errorState = homeState.apiState
+            ErrorScreen(
+                message = errorState.exception.message ?: errorState.defaultMessage,
+                onRetry = onRetryClick
             )
         }
-        Button(
-            onClick = onCartClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .background(
-                    MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(topStart = 160.dp, topEnd = 160.dp)
-                ),
-            shape = RoundedCornerShape(topStart = 160.dp, topEnd = 160.dp)
-        ) {
-            Box(
+        is ApiUIState.Success -> {
+            val cartItems = cartState.cart.size
+            Column(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter
-            ) {
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ){
+                RangeInput(
+                    homeState.currentRange,
+                    onRangeSelected
+                )
+
+                AddressInput(
+                    currentAddress = homeState.currentAddress,
+                    addresses = homeState.addresses,
+                    onAddAddressClick= onAddAddressClick,
+                    onSelectAddress = onSelectAddress,
+                    onDeleteAddress = onDeleteAddress,
+                    modifier = Modifier
+                        .padding(vertical = 12.dp)
+                )
+
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = stringResource(R.string.create_shopping_list),
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                            .size(60.dp)
+                    Spacer(modifier = Modifier.padding(vertical = 24.dp))
+
+                    CustomButton(
+                        onClick = onCheckBestRouteClick,
+                        icon = Icons.Default.CheckCircle,
+                        text = stringResource(R.string.check_the_best_route),
                     )
-                    Text(
-                        text = stringResource(R.string.create_shopping_list)
+
+                    CustomButton(
+                        onClick = onAddPurchaseClick,
+                        icon = Icons.Default.AddCircle,
+                        text = stringResource(R.string.add_purchase)
                     )
-                    if (cartItems > 0) {
-                        Text(text = "(${cartItems.toString()})")
+
+                    CustomButton(
+                        onClick = onSavingsReportClick,
+                        icon = Icons.Default.Info,
+                        text = stringResource(R.string.purchases_report)
+                    )
+                }
+                Button(
+                    onClick = onCartClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .background(
+                            MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(topStart = 160.dp, topEnd = 160.dp)
+                        ),
+                    shape = RoundedCornerShape(topStart = 160.dp, topEnd = 160.dp)
+                ) {
+                    when (cartState.apiState) {
+                        is ApiUIState.Loading -> {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.surface
+                            )
+                        }
+                        is ApiUIState.Error -> {
+                            Icon(imageVector = Icons.Default.Warning, contentDescription = "")
+                        }
+                        is ApiUIState.Success -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.TopCenter
+                            ) {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ShoppingCart,
+                                        contentDescription = stringResource(R.string.create_shopping_list),
+                                        modifier = Modifier
+                                            .padding(top = 16.dp)
+                                            .size(60.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.create_shopping_list)
+                                    )
+                                    if (cartItems > 0) {
+                                        Text(text = "(${cartItems})")
+                                    }
+                                }
+                            }
+                            
+                        }
                     }
                 }
             }
@@ -326,12 +359,9 @@ fun AddressesList(
 fun HomeScreenPreview() {
     PriceRecommenderTheme {
         HomeScreen(
-            1,
-            5f,
-            "Av. Brasil 3919",
-            emptyList(),
-            //listOf("Rivera 1234", "Cuareim 1451"),
-            {}, {}, {}, {}, {}, {}, {}, {}
+            HomeUIState(apiState = ApiUIState.Success("")),
+            CartUIState(apiState = ApiUIState.Loading),
+            {}, {}, {}, {}, {}, {}, {}, {}, {}
         )
     }
 }

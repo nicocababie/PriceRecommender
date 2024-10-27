@@ -41,189 +41,212 @@ import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
 import com.example.pricerecommender.data.model.CartProduct
 import com.example.pricerecommender.data.model.ProductResponse
+import com.example.pricerecommender.ui.ApiUIState
+import com.example.pricerecommender.ui.screen.api.ErrorScreen
+import com.example.pricerecommender.ui.screen.api.LoadingScreen
 import com.example.pricerecommender.ui.screen.components.Counter
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun CartScreen(
-    cart: List<CartProduct>,
+    cartState: CartUIState,
     availableProducts: ProductResponse,
-    currentName: String,
-    currentAmount: Int,
-    currentBrand: String,
     updateCurrentName: (String) -> Unit,
     updateCurrentAmount: (Int) -> Unit,
     updateCurrentBrand: (String) -> Unit,
     onAddProductToCart: (String, Int, String, Context) -> Unit,
     onDeleteProductFromCart: (CartProduct, Context) -> Unit,
     onEmptyCart: (Context) -> Unit,
-    emptyState: () -> Unit
+    emptyState: () -> Unit,
+    onRetryClick: () -> Unit
 ) {
-    val context = LocalContext.current
-    var isNameDropdownExpanded by remember { mutableStateOf(false) }
-    var isBrandDropdownExpanded by remember { mutableStateOf(false) }
-    val enabled = currentName != "Name" &&
-            currentAmount != 0 &&
-            currentBrand != "Brand"
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 18.dp)
-    ){
-        OutlinedButton(
-            onClick = { isNameDropdownExpanded = !isNameDropdownExpanded },
-            shape = RoundedCornerShape(4.dp),
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .height(56.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ){
-                Text(
-                    text = currentName
-                )
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = stringResource(R.string.add_product_name)
-                )
-            }
+    when (cartState.apiState) {
+        is ApiUIState.Loading -> {
+            LoadingScreen()
         }
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            DropdownMenu(
-                expanded = isNameDropdownExpanded,
-                onDismissRequest = { isNameDropdownExpanded = false },
+
+        is ApiUIState.Error -> {
+            val errorState = cartState.apiState
+            ErrorScreen(
+                message = errorState.exception.message ?: errorState.defaultMessage,
+                onRetry = onRetryClick
+            )
+        }
+
+        is ApiUIState.Success -> {
+            val context = LocalContext.current
+            var isNameDropdownExpanded by remember { mutableStateOf(false) }
+            var isBrandDropdownExpanded by remember { mutableStateOf(false) }
+            val currentName = cartState.currentName
+            val currentAmount = cartState.currentAmount
+            val currentBrand = cartState.currentBrand
+            val enabled = currentName != "Name" &&
+                    currentAmount != 0 &&
+                    currentBrand != "Brand"
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 400.dp)
-            ) {
-                val productNames = availableProducts.data.map { it.name }.distinct()
-                val filteredNames = if (currentBrand != "Brand") {
-                    availableProducts.data
-                        .filter { it.brand == currentBrand }
-                        .map { it.name }
-                } else {
-                    productNames
-                }
-                filteredNames.forEach {
-                    OutlinedButton(
-                        onClick = {
-                            updateCurrentName(it)
-                            isNameDropdownExpanded = false
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        border = BorderStroke(0.dp, Color.Transparent)
-                    ) {
+                    .fillMaxSize()
+                    .padding(vertical = 18.dp)
+            ){
+                OutlinedButton(
+                    onClick = { isNameDropdownExpanded = !isNameDropdownExpanded },
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(56.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
                         Text(
-                            text = it,
-                            modifier = Modifier.fillMaxWidth()
+                            text = currentName
+                        )
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = stringResource(R.string.add_product_name)
                         )
                     }
                 }
-            }
-        }
-
-        if (!isNameDropdownExpanded){
-            OutlinedButton(
-                onClick = { isBrandDropdownExpanded = !isBrandDropdownExpanded },
-                shape = RoundedCornerShape(4.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .height(56.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxWidth()
-                ){
-                    Text(
-                        text = currentBrand
-                    )
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = stringResource(R.string.add_product_brand)
-                    )
-                }
-            }
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                DropdownMenu(
-                    expanded = isBrandDropdownExpanded,
-                    onDismissRequest = { isBrandDropdownExpanded = false },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 400.dp)
                 ) {
-                    val productBrands = availableProducts.data.map { it.brand }.distinct()
-                    val filteredBrands = if (currentName != "Name") {
-                        availableProducts.data
-                            .filter { it.name == currentName }
-                            .map { it.brand }
-                    } else {
-                        productBrands
-                    }
-                    filteredBrands.forEach {
-                        OutlinedButton(
-                            onClick = {
-                                updateCurrentBrand(it)
-                                isBrandDropdownExpanded = false
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            border = BorderStroke(0.dp, Color.Transparent)
-                        ) {
-                            Text(
-                                text = it,
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                    DropdownMenu(
+                        expanded = isNameDropdownExpanded,
+                        onDismissRequest = { isNameDropdownExpanded = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 400.dp)
+                    ) {
+                        val productNames = availableProducts.data.map { it.name }.distinct()
+                        val filteredNames = if (currentBrand != "Brand") {
+                            availableProducts.data
+                                .filter { it.brand == currentBrand }
+                                .map { it.name }
+                        } else {
+                            productNames
+                        }
+                        filteredNames.forEach {
+                            OutlinedButton(
+                                onClick = {
+                                    updateCurrentName(it)
+                                    isNameDropdownExpanded = false
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                border = BorderStroke(0.dp, Color.Transparent)
+                            ) {
+                                Text(
+                                    text = it,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
                     }
                 }
-            }
-            if (!isBrandDropdownExpanded){
-                Counter(
-                    currentAmount = currentAmount,
-                    onDecrementClick = { if (currentAmount != 0) updateCurrentAmount(currentAmount.dec()) },
-                    onIncrementClick = { updateCurrentAmount(currentAmount.inc()) }
-                )
-                CustomOutlinedButton(
-                    text = stringResource(R.string.clear_selection),
-                    onClick = emptyState
-                )
-                CustomOutlinedButton(
-                    text = stringResource(R.string.add_to_cart),
-                    enabled = enabled,
-                    onClick = {
-                        onAddProductToCart(
-                            currentName,
-                            currentAmount,
-                            currentBrand,
-                            context
+
+                if (!isNameDropdownExpanded){
+                    OutlinedButton(
+                        onClick = { isBrandDropdownExpanded = !isBrandDropdownExpanded },
+                        shape = RoundedCornerShape(4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .height(56.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            Text(
+                                text = currentBrand
+                            )
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = stringResource(R.string.add_product_brand)
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        DropdownMenu(
+                            expanded = isBrandDropdownExpanded,
+                            onDismissRequest = { isBrandDropdownExpanded = false },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 400.dp)
+                        ) {
+                            val productBrands = availableProducts.data.map { it.brand }.distinct()
+                            val filteredBrands = if (currentName != "Name") {
+                                availableProducts.data
+                                    .filter { it.name == currentName }
+                                    .map { it.brand }
+                            } else {
+                                productBrands
+                            }
+                            filteredBrands.forEach {
+                                OutlinedButton(
+                                    onClick = {
+                                        updateCurrentBrand(it)
+                                        isBrandDropdownExpanded = false
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    border = BorderStroke(0.dp, Color.Transparent)
+                                ) {
+                                    Text(
+                                        text = it,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    if (!isBrandDropdownExpanded){
+                        val cart = cartState.cart
+                        Counter(
+                            currentAmount = currentAmount,
+                            onDecrementClick = { if (currentAmount != 0) updateCurrentAmount(currentAmount.dec()) },
+                            onIncrementClick = { updateCurrentAmount(currentAmount.inc()) }
+                        )
+                        CustomOutlinedButton(
+                            text = stringResource(R.string.clear_selection),
+                            onClick = emptyState
+                        )
+                        CustomOutlinedButton(
+                            text = stringResource(R.string.add_to_cart),
+                            enabled = enabled,
+                            onClick = {
+                                onAddProductToCart(
+                                    currentName,
+                                    currentAmount,
+                                    currentBrand,
+                                    context
+                                )
+                            }
+                        )
+                        CartList(
+                            cart = cart,
+                            onEmptyCart = onEmptyCart,
+                            onDeleteProductFromCart = onDeleteProductFromCart,
+                            context = context,
+                            modifier = Modifier.weight(0.5f)
                         )
                     }
-                )
-                CartList(
-                    cart = cart,
-                    onEmptyCart = onEmptyCart,
-                    onDeleteProductFromCart = onDeleteProductFromCart,
-                    context = context,
-                    modifier = Modifier.weight(0.5f)
-                )
+                }
             }
         }
     }
+
+
 }
 
 @Composable
@@ -323,22 +346,20 @@ fun CartItem(
 fun CartScreenPreview() {
     PriceRecommenderTheme {
         CartScreen(
-            listOf(
+            CartUIState(apiState = ApiUIState.Success(listOf(
                 CartProduct(null,"Agua", 5, "40"),
                 CartProduct(null,"Milanesa", 2, "200"),
                 CartProduct(null,"Milanesa", 2, "200"),
                 CartProduct(null,"Milanesa", 2, "200"),
-            ),
+            ))),
             ProductResponse(emptyList()),
-            "Name",
-            1,
-            "Brand",
             {name ->},
             {amount ->},
             {brand ->},
             {name, amount, brand, context ->},
             {product, context ->},
             {context ->},
+            {},
             {}
         )
     }

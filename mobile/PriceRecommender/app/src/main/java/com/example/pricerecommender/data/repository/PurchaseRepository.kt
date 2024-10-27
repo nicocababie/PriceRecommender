@@ -2,6 +2,7 @@ package com.example.pricerecommender.data.repository
 
 import com.example.pricerecommender.data.model.DetailedPurchase
 import com.example.pricerecommender.data.model.Product
+import com.example.pricerecommender.data.model.PurchaseReport
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository
 import com.example.pricerecommender.network.PurchaseApiService
 import com.google.android.gms.maps.model.LatLng
@@ -26,6 +27,10 @@ class PurchaseRepository @Inject constructor(
             listProducts = products
         )
         purchaseApiService.add(detailedPurchase)
+    }
+
+    override suspend fun getReport(userId: String): PurchaseReport {
+        return purchaseApiService.getReport(userId)
     }
 
 }

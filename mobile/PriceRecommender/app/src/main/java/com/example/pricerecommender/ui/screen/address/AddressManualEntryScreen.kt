@@ -33,12 +33,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
 import com.example.pricerecommender.services.geocodeLocation
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
@@ -76,12 +74,6 @@ fun AddressManualEntryScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxSize()
     ){
-        Text(
-            text = "Enter an address",
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-            modifier = Modifier.padding(top = 24.dp)
-        )
         OutlinedTextField(
             value = currentAddress,
             onValueChange = { updateCurrentAddress(it) },
@@ -182,13 +174,16 @@ fun AddressManualEntryScreen(
             val markerState = MarkerState(position = currentCoord)
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(500.dp)
             ){
                 GoogleMap(
                     cameraPositionState = cameraPosition,
                     onMapLoaded = { isMapLoaded = true },
                     modifier = Modifier
-                        .fillMaxSize(0.9f)
+                        .fillMaxWidth()
+                        .height(500.dp)
                         .clip(RoundedCornerShape(12.dp))
                 ) {
                     Marker(state = markerState)
@@ -209,7 +204,8 @@ fun AddressManualEntryScreen(
                         currentCoord.longitude
                     )
                     emptyState()
-                }
+                },
+                modifier = Modifier.height(48.dp)
             )
         }
 

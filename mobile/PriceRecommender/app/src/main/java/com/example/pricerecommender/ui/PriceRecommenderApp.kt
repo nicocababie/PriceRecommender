@@ -27,7 +27,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pricerecommender.R
-import com.example.pricerecommender.ui.screen.SavingsReportScreen
 import com.example.pricerecommender.ui.screen.address.AddressManualEntryScreen
 import com.example.pricerecommender.ui.screen.address.AddressViewModel
 import com.example.pricerecommender.ui.screen.api.ErrorScreen
@@ -42,6 +41,9 @@ import com.example.pricerecommender.ui.screen.product.ProductViewModel
 import com.example.pricerecommender.ui.screen.product.SelectProductsScreen
 import com.example.pricerecommender.ui.screen.purchase.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.purchase.PurchaseViewModel
+import com.example.pricerecommender.ui.screen.purchasesReport.PurchaseReportViewModel
+import com.example.pricerecommender.ui.screen.purchasesReport.PurchasesReportScreen
+import com.example.pricerecommender.ui.screen.purchasesReport.SelectedPurchaseScreen
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 import com.example.pricerecommender.ui.utils.PriceRecommenderScreen
 
@@ -53,6 +55,7 @@ fun PriceRecommenderApp(
     productViewModel: ProductViewModel = hiltViewModel(),
     cartViewModel: CartViewModel = hiltViewModel(),
     addressViewModel: AddressViewModel = hiltViewModel(),
+    purchaseReportViewModel: PurchaseReportViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -67,6 +70,7 @@ fun PriceRecommenderApp(
     val productState by productViewModel.uiState.collectAsState()
     val cartState by cartViewModel.uiState.collectAsState()
     val addressState by addressViewModel.uiState.collectAsState()
+    val purchaseReportState by purchaseReportViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -104,7 +108,10 @@ fun PriceRecommenderApp(
                             onDeleteAddress = { homeViewModel.deleteAddress(it) },
                             onCheckBestRouteClick = { navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name) },
                             onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) },
-                            onSavingsReportClick = { navController.navigate(PriceRecommenderScreen.SavingsReportScreen.name) },
+                            onSavingsReportClick = {
+                                purchaseReportViewModel.getReport(purchaseReportState.userId)
+                                navController.navigate(PriceRecommenderScreen.PurchasesReportScreen.name)
+                                                   },
                             onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) },
                             onRangeSelected = { homeViewModel.updateCurrentRange(it) }
                         )
@@ -180,8 +187,18 @@ fun PriceRecommenderApp(
                 )
             }
 
-            composable(route = PriceRecommenderScreen.SavingsReportScreen.name) {
-                SavingsReportScreen()
+            composable(route = PriceRecommenderScreen.PurchasesReportScreen.name) {
+                PurchasesReportScreen(
+                    report = purchaseReportState.report,
+                    onPurchaseClick = {
+                        purchaseReportViewModel.updateCurrentPurchase(it)
+                        navController.navigate(PriceRecommenderScreen.SelectedPurchaseScreen.name)
+                    }
+                )
+            }
+
+            composable(route = PriceRecommenderScreen.SelectedPurchaseScreen.name) {
+                SelectedPurchaseScreen(purchase = purchaseReportState.currentPurchase)
             }
 
             composable(route = PriceRecommenderScreen.CartScreen.name) {

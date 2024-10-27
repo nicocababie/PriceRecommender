@@ -101,7 +101,7 @@ fun HomeScreen(
             CustomButton(
                 onClick = onSavingsReportClick,
                 icon = Icons.Default.Info,
-                text = stringResource(R.string.savings_report)
+                text = stringResource(R.string.purchases_report)
             )
         }
         Button(

@@ -18,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CartViewModel @Inject constructor(
     private val cartRepository: ICartRepository,
-    private val productRepository: IProductRepository,
     private val preferencesRepository: PreferencesRepository,
 ): ViewModel() {
     private val _uiState = MutableStateFlow(CartUIState())

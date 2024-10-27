@@ -5,12 +5,12 @@
     <string name="navigate_back">Navigate back</string>
     <string name="check_the_best_route">Best route</string>
     <string name="add_purchase">Add purchase</string>
-    <string name="savings_report">Savings report</string>
+    <string name="purchases_report">Purchases report</string>
     <string name="create_shopping_list">Shopping list</string>
     <string name="address">Address</string>
     <string name="add_address">Add address</string>
     <string name="google_maps">Google Maps</string>
-    <string name="manual_entry">Manual entry</string>
+    <string name="manual_entry">Address</string>
     <string name="back_button">Back button</string>
     <string name="show_addresses">Show addresses</string>
     <string name="range">Range</string>
@@ -39,4 +39,5 @@
     <string name="cancel">Cancel</string>
     <string name="select_department">Select department</string>
     <string name="submit">Submit</string>
+    <string name="selected_purchase_screen">Purchase details</string>
 </resources>

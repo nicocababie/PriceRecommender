@@ -10,10 +10,11 @@ enum class PriceRecommenderScreen(
     CartScreen(R.string.create_shopping_list),
     CheckBestRouteScreen(R.string.check_the_best_route),
     AddPurchaseScreen(R.string.add_purchase),
-    SavingsReportScreen(R.string.savings_report),
+    PurchasesReportScreen(R.string.purchases_report),
     AddressManualEntryScreen(R.string.manual_entry),
     SelectProductsScreen(R.string.select_products),
     ErrorScreen(R.string.error_screen),
     LoadingScreen(R.string.loading_screen),
-    StoreAddressScreen(R.string.store_address)
+    StoreAddressScreen(R.string.store_address),
+    SelectedPurchaseScreen(R.string.selected_purchase_screen)
 }

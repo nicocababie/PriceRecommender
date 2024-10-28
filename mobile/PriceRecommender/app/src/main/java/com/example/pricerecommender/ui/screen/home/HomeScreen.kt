@@ -42,8 +42,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
 import com.example.pricerecommender.data.model.AddressDetail
 import com.example.pricerecommender.ui.ApiUIState
@@ -141,7 +146,27 @@ fun HomeScreen(
                             )
                         }
                         is ApiUIState.Error -> {
-                            Icon(imageVector = Icons.Default.Warning, contentDescription = "")
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ){
+                                Icon(
+                                    imageVector = Icons.Default.Warning,
+                                    contentDescription = "",
+                                    modifier = Modifier.fillMaxSize(0.4f)
+                                )
+                                Text(
+                                    text = buildAnnotatedString {
+                                        withStyle(
+                                            style = SpanStyle(fontWeight = FontWeight.ExtraBold)
+                                        ) {
+                                            append(stringResource(R.string.server_error))
+                                        }
+                                        append(": ${stringResource(R.string.click_to_see_more_details)}")
+                                    },
+                                    fontSize = 16.sp
+                                )
+                            }
                         }
                         is ApiUIState.Success -> {
                             Box(
@@ -361,7 +386,7 @@ fun HomeScreenPreview() {
     PriceRecommenderTheme {
         HomeScreen(
             HomeUIState(apiState = ApiUIState.Success("")),
-            CartUIState(apiState = ApiUIState.Loading),
+            CartUIState(apiState = ApiUIState.Error(exception = Throwable())),
             {}, {}, {}, {}, {}, {}, {}, {}, {}
         )
     }

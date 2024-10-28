@@ -69,7 +69,7 @@ fun CartScreen(
         is ApiUIState.Error -> {
             val errorState = cartState.apiState
             ErrorScreen(
-                message = errorState.exception.message ?: errorState.defaultMessage,
+                message = errorState.defaultMessage,
                 onRetry = onRetryClick
             )
         }

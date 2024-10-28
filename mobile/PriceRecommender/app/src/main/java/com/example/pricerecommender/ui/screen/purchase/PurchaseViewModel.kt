@@ -88,8 +88,8 @@ class PurchaseViewModel @Inject constructor(
             } catch (e: Exception) {
                 Toast.makeText(
                     context,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
+                    "Server Error: Error while adding purchase",
+                    Toast.LENGTH_LONG
                 ).show()
             }
         }

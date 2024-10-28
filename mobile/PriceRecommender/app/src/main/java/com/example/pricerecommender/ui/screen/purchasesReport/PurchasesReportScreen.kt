@@ -46,7 +46,7 @@ fun PurchasesReportScreen(
         is ApiUIState.Error -> {
             val errorState = uiState.apiState
             ErrorScreen(
-                message = errorState.exception.message ?: errorState.defaultMessage,
+                message = errorState.defaultMessage,
                 onRetry = onRetryClick
             )
         }

@@ -14,6 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.example.pricerecommender.ui.ApiUIState
+import com.example.pricerecommender.ui.screen.api.ErrorScreen
+import com.example.pricerecommender.ui.screen.api.LoadingScreen
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
@@ -25,31 +28,46 @@ fun CheckBestRouteScreen(
     cameraPosition: CameraPositionState,
     isMapLoaded: Boolean,
     updateIsMapLoaded: (Boolean) -> Unit,
-    updateCameraPosition: (LatLng, Float) -> Unit
+    updateCameraPosition: (LatLng, Float) -> Unit,
+    onRetryClick: () -> Unit
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        GoogleMapView(
-            bestRouteState,
-            modifier = Modifier
-                .fillMaxSize(0.9f)
-                .clip(RoundedCornerShape(12.dp)),
-            cameraPosition = cameraPosition,
-            onMapLoaded = { updateIsMapLoaded(true) },
-            updateCameraPosition
-        )
-        if (!isMapLoaded) {
-            AnimatedVisibility(
-                visible = !isMapLoaded,
-                enter = EnterTransition.None,
-                exit = fadeOut()
+    when (bestRouteState.apiState) {
+        is ApiUIState.Loading -> {
+            LoadingScreen()
+        }
+        is ApiUIState.Error -> {
+            val errorState = bestRouteState.apiState
+            ErrorScreen(
+                message = errorState.defaultMessage,
+                onRetry = onRetryClick
+            )
+        }
+        is ApiUIState.Success -> {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
             ) {
-                CircularProgressIndicator(
+                GoogleMapView(
+                    bestRouteState,
                     modifier = Modifier
-                        .wrapContentSize()
+                        .fillMaxSize(0.9f)
+                        .clip(RoundedCornerShape(12.dp)),
+                    cameraPosition = cameraPosition,
+                    onMapLoaded = { updateIsMapLoaded(true) },
+                    updateCameraPosition
                 )
+                if (!isMapLoaded) {
+                    AnimatedVisibility(
+                        visible = !isMapLoaded,
+                        enter = EnterTransition.None,
+                        exit = fadeOut()
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
+                }
             }
         }
     }

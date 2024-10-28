@@ -118,7 +118,15 @@ fun PriceRecommenderApp(
                     cameraPosition =  bestRouteViewModel.getCameraPosition(),
                     isMapLoaded = bestRouteState.isMapLoaded,
                     updateIsMapLoaded = { bestRouteViewModel.updateIsLoadedMap(it) },
-                    updateCameraPosition = { latLng, zoom -> bestRouteViewModel.updateCameraPosition(latLng, zoom) }
+                    updateCameraPosition = { latLng, zoom -> bestRouteViewModel.updateCameraPosition(latLng, zoom) },
+                    onRetryClick = {
+                        bestRouteViewModel.getBestRoute(
+                            userId = homeState.userId,
+                            addressLat = homeState.currentAddress.lat,
+                            addressLng = homeState.currentAddress.lng,
+                            range = homeState.currentRange.toInt()
+                        )
+                    }
                 )
             }
 

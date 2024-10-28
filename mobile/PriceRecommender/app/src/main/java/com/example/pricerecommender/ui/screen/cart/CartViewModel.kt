@@ -73,8 +73,8 @@ class CartViewModel @Inject constructor(
             } catch (e: Exception) {
                 Toast.makeText(
                     context,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
+                    "Server Error: Error while adding product to cart",
+                    Toast.LENGTH_LONG
                 ).show()
             }
         }
@@ -102,8 +102,8 @@ class CartViewModel @Inject constructor(
             } catch (e: Exception) {
                 Toast.makeText(
                     context,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
+                    "Server Error: Error while deleting product from cart",
+                    Toast.LENGTH_LONG
                 ).show()
             }
         }
@@ -128,7 +128,7 @@ class CartViewModel @Inject constructor(
             } catch (e: Exception) {
                 Toast.makeText(
                     context,
-                    "Error: ${e.message}",
+                    "Server Error: Error while deleting products from cart",
                     Toast.LENGTH_SHORT
                 ).show()
             }

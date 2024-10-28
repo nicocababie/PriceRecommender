@@ -40,4 +40,6 @@
     <string name="select_department">Select department</string>
     <string name="submit">Submit</string>
     <string name="selected_purchase_screen">Purchase details</string>
+    <string name="server_error">Server Error</string>
+    <string name="click_to_see_more_details">Click to see more details</string>
 </resources>

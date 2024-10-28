@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.model.MarkerDetail
 import com.example.pricerecommender.data.repositoryInterface.IProductRepository
+import com.example.pricerecommender.ui.ApiUIState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -45,23 +46,30 @@ class BestRouteViewModel @Inject constructor(
 
     fun getBestRoute(userId : String, addressLat: Double, addressLng: Double, range: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val route = productRepository.getBestRoute(
-                userId = userId,
-                addressLat = addressLat,
-                addressLng = addressLng,
-                range = range
-            ).map {
-                MarkerDetail(
-                    storeName = it.storeName,
-                    storeLatLng = MarkerState(position = LatLng(it.storeLat, it.storeLng)),
-                    productName = it.productName,
-                    productPrice = it.price
-                )
-            }
-            _uiState.update { currentState ->
-                currentState.copy(
-                    details = route
-                )
+            try {
+                val route = productRepository.getBestRoute(
+                    userId = userId,
+                    addressLat = addressLat,
+                    addressLng = addressLng,
+                    range = range
+                ).map {
+                    MarkerDetail(
+                        storeName = it.storeName,
+                        storeLatLng = MarkerState(position = LatLng(it.storeLat, it.storeLng)),
+                        productName = it.productName,
+                        productPrice = it.price
+                    )
+                }
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        details = route,
+                        apiState = ApiUIState.Success(route)
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { currentState ->
+                    currentState.copy(apiState = ApiUIState.Error(e))
+                }
             }
         }
     }

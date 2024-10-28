@@ -92,7 +92,15 @@ fun PriceRecommenderApp(
                     onAddAddressClick = { navController.navigate(PriceRecommenderScreen.AddressManualEntryScreen.name) },
                     onSelectAddress = { homeViewModel.updateCurrentAddress(it) },
                     onDeleteAddress = { homeViewModel.deleteAddress(it) },
-                    onCheckBestRouteClick = { navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name) },
+                    onCheckBestRouteClick = {
+                        bestRouteViewModel.getBestRoute(
+                            userId = homeState.userId,
+                            addressLat = homeState.currentAddress.lat,
+                            addressLng = homeState.currentAddress.lng,
+                            range = homeState.currentRange.toInt()
+                        )
+                        navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name)
+                                            },
                     onAddPurchaseClick = { navController.navigate(PriceRecommenderScreen.AddPurchaseScreen.name) },
                     onSavingsReportClick = {
                         purchaseReportViewModel.getReport(purchaseReportState.userId)
@@ -106,9 +114,9 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.CheckBestRouteScreen.name) {
                 CheckBestRouteScreen(
+                    bestRouteState = bestRouteState,
                     cameraPosition =  bestRouteViewModel.getCameraPosition(),
                     isMapLoaded = bestRouteState.isMapLoaded,
-                    markers = bestRouteViewModel.getMarkers(),
                     updateIsMapLoaded = { bestRouteViewModel.updateIsLoadedMap(it) },
                     updateCameraPosition = { latLng, zoom -> bestRouteViewModel.updateCameraPosition(latLng, zoom) }
                 )

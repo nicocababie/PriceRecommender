@@ -18,13 +18,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 
 @Composable
 fun CheckBestRouteScreen(
+    bestRouteState: BestRouteUIState,
     cameraPosition: CameraPositionState,
     isMapLoaded: Boolean,
-    markers: List<MarkerState>,
     updateIsMapLoaded: (Boolean) -> Unit,
     updateCameraPosition: (LatLng, Float) -> Unit
 ) {
@@ -33,12 +32,12 @@ fun CheckBestRouteScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         GoogleMapView(
+            bestRouteState,
             modifier = Modifier
                 .fillMaxSize(0.9f)
                 .clip(RoundedCornerShape(12.dp)),
             cameraPosition = cameraPosition,
             onMapLoaded = { updateIsMapLoaded(true) },
-            markers,
             updateCameraPosition
         )
         if (!isMapLoaded) {
@@ -58,22 +57,23 @@ fun CheckBestRouteScreen(
 
 @Composable
 fun GoogleMapView(
+    bestRouteState: BestRouteUIState,
     modifier: Modifier = Modifier,
     cameraPosition: CameraPositionState,
     onMapLoaded: () -> Unit = {},
-    markers: List<MarkerState>,
     updateCameraPosition: (LatLng, Float) -> Unit,
     content: @Composable () -> Unit = {}
 ) {
+    val details = bestRouteState.details
     GoogleMap(
         modifier = modifier,
         cameraPositionState = cameraPosition,
         onMapLoaded = onMapLoaded,
     ) {
-        markers.forEach {
+        details.forEach {
             Marker(
-                state = it,
-                title = "Marker Tag"
+                state = it.storeLatLng,
+                title = it.storeName
             )
         }
         content()

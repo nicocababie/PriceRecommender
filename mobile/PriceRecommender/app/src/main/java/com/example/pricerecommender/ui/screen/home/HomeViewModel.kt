@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.IAddressRepository
+import com.example.pricerecommender.data.repositoryInterface.IProductRepository
 import com.example.pricerecommender.data.repositoryInterface.IUserRepository
 import com.example.pricerecommender.ui.ApiUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val addressRepository: IAddressRepository,
     private val preferencesRepository: PreferencesRepository,
-    private val userRepository: IUserRepository
+    private val userRepository: IUserRepository,
+    private val productRepository: IProductRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUIState())
     var uiState: StateFlow<HomeUIState> = _uiState
@@ -31,23 +33,28 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateCurrentAddress(address: String) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                currentAddress = address
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { currentState ->
+                addressRepository.getAddressByName(address)?.let {
+                    currentState.copy(
+                        currentAddress = it
+                    )
+                }!!
+            }
+            saveCurrentAddress(address)
         }
-        saveCurrentAddress(address)
+
     }
 
-    fun insertAddress(address: String, lat: Double, lng: Double) {
+    fun insertAddress(name: String, lat: Double, lng: Double) {
         viewModelScope.launch(Dispatchers.IO) {
-            addressRepository.insert(address, lat, lng)
+            val address = addressRepository.insert(name, lat, lng)
             _uiState.update { currentState ->
                 currentState.copy(
                     currentAddress = address
                 )
             }
-            saveCurrentAddress(address)
+            saveCurrentAddress(name)
             getAllAddresses()
         }
     }
@@ -55,7 +62,7 @@ class HomeViewModel @Inject constructor(
     fun deleteAddress(address: String) {
         viewModelScope.launch(Dispatchers.IO) {
             addressRepository.delete(address)
-            val allAddresses = addressRepository.getAllAddresses().map { it.address }
+            val allAddresses = addressRepository.getAllAddresses()
             _uiState.update { currentState ->
                 currentState.copy(
                     addresses = allAddresses,
@@ -68,7 +75,7 @@ class HomeViewModel @Inject constructor(
                         currentAddress = firstAddress
                     )
                 }
-                saveCurrentAddress(firstAddress)
+                saveCurrentAddress(firstAddress.address)
             }
         }
     }
@@ -86,9 +93,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    addresses = addressRepository.getAllAddresses().map {
-                        it.address
-                    }
+                    addresses = addressRepository.getAllAddresses()
                 )
             }
         }
@@ -101,13 +106,16 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getCurrentAddress() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             preferencesRepository.userAddress
                 .collect { savedAddress ->
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            currentAddress = savedAddress
-                        )
+                    val address = addressRepository.getAddressByName(savedAddress)
+                    if (address != null){
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                currentAddress = address
+                            )
+                        }
                     }
                 }
         }

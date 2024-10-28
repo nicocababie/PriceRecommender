@@ -45,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pricerecommender.R
+import com.example.pricerecommender.data.model.AddressDetail
 import com.example.pricerecommender.ui.ApiUIState
 import com.example.pricerecommender.ui.screen.api.ErrorScreen
 import com.example.pricerecommender.ui.screen.api.LoadingScreen
@@ -88,8 +89,8 @@ fun HomeScreen(
                 )
 
                 AddressInput(
-                    currentAddress = homeState.currentAddress,
-                    addresses = homeState.addresses,
+                    currentAddress = homeState.currentAddress.address,
+                    addressDetails = homeState.addresses,
                     onAddAddressClick= onAddAddressClick,
                     onSelectAddress = onSelectAddress,
                     onDeleteAddress = onDeleteAddress,
@@ -242,13 +243,13 @@ fun OutlinedTransparentButton(
 @Composable
 fun AddressInput(
     currentAddress: String,
-    addresses: List<String>,
+    addressDetails: List<AddressDetail>,
     onAddAddressClick: () -> Unit,
     onSelectAddress: (String) -> Unit,
     onDeleteAddress: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (addresses.isEmpty()){
+    if (addressDetails.isEmpty()){
         OutlinedTransparentButton(
             R.string.address,
             Icons.Default.Add,
@@ -256,14 +257,14 @@ fun AddressInput(
             modifier = modifier
         )
     } else {
-        AddressesList(currentAddress, addresses, onSelectAddress, onDeleteAddress, onAddAddressClick)
+        AddressesList(currentAddress, addressDetails, onSelectAddress, onDeleteAddress, onAddAddressClick)
     }
 }
 
 @Composable
 fun AddressesList(
     currentAddress: String,
-    addresses: List<String>,
+    addressDetails: List<AddressDetail>,
     onSelectAddress: (String) -> Unit,
     onDeleteAddress: (String) -> Unit,
     onAddAddressClick: () -> Unit
@@ -302,7 +303,7 @@ fun AddressesList(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                addresses.forEach {
+                addressDetails.forEach {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -310,18 +311,18 @@ fun AddressesList(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = it,
+                            text = it.address,
                             modifier = Modifier
                                 .padding(start = 24.dp)
                                 .weight(1f)
                                 .clickable {
-                                    onSelectAddress(it)
+                                    onSelectAddress(it.address)
                                     expanded = false
                                 }
                         )
                         OutlinedButton(
                             onClick = {
-                                onDeleteAddress(it)
+                                onDeleteAddress(it.address)
                                 expanded = false
                             },
                             border = BorderStroke(0.dp, Color.Transparent)

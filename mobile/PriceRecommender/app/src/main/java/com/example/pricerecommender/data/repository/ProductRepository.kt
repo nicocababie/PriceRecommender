@@ -20,7 +20,7 @@ class ProductRepository @Inject constructor(
         addressLng: Double,
         range: Int,
     ): List<BestResult> {
-        val detail = RouteDetail(addressLat, addressLng, range)
+        val detail = RouteDetail(addressLat, addressLng, (range * 1000))
         return productApiService.getBestRoute(userId, detail).data
     }
 }

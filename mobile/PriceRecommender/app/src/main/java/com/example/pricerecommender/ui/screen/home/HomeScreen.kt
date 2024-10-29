@@ -240,7 +240,7 @@ fun RangeInput(
         Slider(
             value = currentRange,
             onValueChange = { onRangeSelected(it) },
-            valueRange = 0f..100f,
+            valueRange = 0f..30f,
             modifier = Modifier.width(200.dp)
         )
     }

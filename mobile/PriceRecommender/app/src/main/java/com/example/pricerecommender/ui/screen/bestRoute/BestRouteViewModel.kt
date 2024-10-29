@@ -7,6 +7,7 @@ import com.example.pricerecommender.data.repositoryInterface.IProductRepository
 import com.example.pricerecommender.ui.ApiUIState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.MarkerState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @HiltViewModel
 class BestRouteViewModel @Inject constructor(
@@ -60,10 +66,16 @@ class BestRouteViewModel @Inject constructor(
                         productPrice = it.price
                     )
                 }
+                val boundsBuilder = LatLngBounds.builder()
+                route.forEach { detail ->
+                    boundsBuilder.include(detail.storeLatLng.position)
+                }
+                val bounds = boundsBuilder.build()
                 _uiState.update { currentState ->
                     currentState.copy(
                         details = route,
-                        apiState = ApiUIState.Success(route)
+                        apiState = ApiUIState.Success(route),
+                        cameraPosition = CameraPosition.fromLatLngZoom(bounds.center, getZoomForBounds(bounds))
                     )
                 }
             } catch (e: Exception) {
@@ -71,6 +83,30 @@ class BestRouteViewModel @Inject constructor(
                     currentState.copy(apiState = ApiUIState.Error(e))
                 }
             }
+        }
+    }
+
+    private fun getZoomForBounds(bounds: LatLngBounds): Float {
+        val northeast = bounds.northeast
+        val southwest = bounds.southwest
+
+        val earthRadius = 6371.0
+
+        val latDiff = Math.toRadians(northeast.latitude - southwest.latitude)
+        val lngDiff = Math.toRadians(northeast.longitude - southwest.longitude)
+
+        val a = sin(latDiff / 2).pow(2.0) +
+                cos(Math.toRadians(southwest.latitude)) * cos(Math.toRadians(northeast.latitude)) *
+                sin(lngDiff / 2).pow(2.0)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        val distanceKm = earthRadius * c
+
+        return when {
+            distanceKm > 20 -> 7f
+            distanceKm > 10 -> 9f
+            distanceKm > 5 -> 11f
+            else -> 13f
         }
     }
 }

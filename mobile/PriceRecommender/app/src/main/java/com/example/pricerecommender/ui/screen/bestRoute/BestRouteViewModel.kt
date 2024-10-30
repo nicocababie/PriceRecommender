@@ -50,7 +50,8 @@ class BestRouteViewModel @Inject constructor(
         return CameraPositionState(_uiState.value.cameraPosition)
     }
 
-    fun getBestRoute(userId : String, addressLat: Double, addressLng: Double, range: Int) {
+    fun getBestRoute(userId : String, addressLat: Double, addressLng: Double, range: Float) {
+        emptyState()
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val route = productRepository.getBestRoute(
@@ -107,6 +108,17 @@ class BestRouteViewModel @Inject constructor(
             distanceKm > 10 -> 9f
             distanceKm > 5 -> 11f
             else -> 13f
+        }
+    }
+
+    private fun emptyState() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                cameraPosition = CameraPosition.fromLatLngZoom(LatLng(-34.901112, -56.164532), 14f),
+                isMapLoaded = false,
+                details = emptyList(),
+                apiState = ApiUIState.Loading
+            )
         }
     }
 }

@@ -9,6 +9,6 @@ interface IProductRepository {
         userId: String,
         addressLat: Double,
         addressLng: Double,
-        range: Int
+        range: Float
     ): List<BestResult>
 }

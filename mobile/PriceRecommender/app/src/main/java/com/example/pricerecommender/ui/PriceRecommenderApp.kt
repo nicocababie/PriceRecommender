@@ -97,7 +97,7 @@ fun PriceRecommenderApp(
                             userId = homeState.userId,
                             addressLat = homeState.currentAddress.lat,
                             addressLng = homeState.currentAddress.lng,
-                            range = homeState.currentRange.toInt()
+                            range = homeState.currentRange
                         )
                         navController.navigate(PriceRecommenderScreen.CheckBestRouteScreen.name)
                                             },
@@ -124,7 +124,7 @@ fun PriceRecommenderApp(
                             userId = homeState.userId,
                             addressLat = homeState.currentAddress.lat,
                             addressLng = homeState.currentAddress.lng,
-                            range = homeState.currentRange.toInt()
+                            range = homeState.currentRange
                         )
                     }
                 )

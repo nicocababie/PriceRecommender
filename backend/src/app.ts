@@ -22,7 +22,7 @@ import { storeDataAccess } from './dataAccess/storeDataAccess';
 import { IstoreService } from './serviceInterface/IstoreService';
 import { storeService } from './service/storeService';
 import storeController from './controller/storeController';
-import Store from './domain/store';
+import upload from './middleware/multer';
 
 dotenv.config();
 
@@ -75,6 +75,8 @@ app.get('/purchases/:id', async (req, res) => {await _purchaseController.getPurc
 app.get('/products', async (req, res) => {await _purchaseController.getProducts(req, res)});
 
 app.get('/users', async (req, res) => {await _userController.createUser(req, res)});
+
+app.post('/purchasesPictures', upload.array('img'), async (req, res) => {await _purchaseController.createPurchaseWithPicture(req, res)});
 
 app.get('/stats/:id', async (req, res) => { await _purchaseController.getLastPurchases(req, res) });
 

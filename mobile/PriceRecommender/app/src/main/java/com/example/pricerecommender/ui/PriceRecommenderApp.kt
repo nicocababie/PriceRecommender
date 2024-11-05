@@ -106,7 +106,10 @@ fun PriceRecommenderApp(
                         purchaseReportViewModel.getReport(purchaseReportState.userId)
                         navController.navigate(PriceRecommenderScreen.PurchasesReportScreen.name)
                     },
-                    onCartClick = { navController.navigate(PriceRecommenderScreen.CartScreen.name) },
+                    onCartClick = {
+                        productViewModel.getProducts()
+                        navController.navigate(PriceRecommenderScreen.CartScreen.name)
+                                  },
                     onRangeSelected = { homeViewModel.updateCurrentRange(it) },
                     onRetryClick = { homeViewModel.getCurrentUserId() }
                 )

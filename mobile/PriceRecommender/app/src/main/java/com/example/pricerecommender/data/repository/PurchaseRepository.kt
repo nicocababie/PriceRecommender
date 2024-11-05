@@ -1,7 +1,7 @@
 package com.example.pricerecommender.data.repository
 
 import com.example.pricerecommender.data.model.DetailedPurchase
-import com.example.pricerecommender.data.model.Product
+import com.example.pricerecommender.data.model.app.Product
 import com.example.pricerecommender.data.model.PurchaseReport
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository
 import com.example.pricerecommender.network.PurchaseApiService

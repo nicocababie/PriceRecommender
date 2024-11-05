@@ -3,7 +3,6 @@ package com.example.pricerecommender.ui.screen.purchasesReport
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,8 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.pricerecommender.data.model.Product
 import com.example.pricerecommender.data.model.PurchaseData
+import com.example.pricerecommender.data.model.app.Product
 import com.example.pricerecommender.ui.ApiUIState
 import com.example.pricerecommender.ui.screen.api.ErrorScreen
 import com.example.pricerecommender.ui.screen.api.LoadingScreen
@@ -57,6 +56,12 @@ fun PurchasesReportScreen(
                     .padding(top = 8.dp)
                     .fillMaxSize()
             ) {
+                item {
+                    Text(
+                        text = "Your last 5 purchases are:",
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
                 items(uiState.report.data) { purchase ->
                     PurchaseItem(
                         purchase,
@@ -85,7 +90,9 @@ fun PurchaseItem(
             verticalAlignment = Alignment.CenterVertically
         ){
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(0.9f)
             ) {
                 Text(
                     text = buildAnnotatedString {
@@ -102,7 +109,6 @@ fun PurchaseItem(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
             IconButton(
                 onClick = { onPurchaseClick(purchase) }
             ) {

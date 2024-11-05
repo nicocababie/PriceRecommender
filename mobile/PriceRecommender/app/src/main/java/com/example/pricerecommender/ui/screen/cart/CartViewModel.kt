@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pricerecommender.data.model.CartProduct
+import com.example.pricerecommender.data.model.app.CartProduct
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.ICartRepository
 import com.example.pricerecommender.ui.ApiUIState

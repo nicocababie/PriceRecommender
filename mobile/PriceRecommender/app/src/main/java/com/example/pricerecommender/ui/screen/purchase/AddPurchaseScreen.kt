@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
-import com.example.pricerecommender.data.model.Product
+import com.example.pricerecommender.data.model.app.Product
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
 import com.example.pricerecommender.ui.screen.components.TextInput
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme

@@ -39,8 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
-import com.example.pricerecommender.data.model.CartProduct
-import com.example.pricerecommender.data.model.ProductResponse
+import com.example.pricerecommender.data.model.app.CartProduct
+import com.example.pricerecommender.data.model.app.Product
 import com.example.pricerecommender.ui.ApiUIState
 import com.example.pricerecommender.ui.screen.api.ErrorScreen
 import com.example.pricerecommender.ui.screen.api.LoadingScreen
@@ -51,7 +51,7 @@ import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 @Composable
 fun CartScreen(
     cartState: CartUIState,
-    availableProducts: ProductResponse,
+    availableProducts: List<Product>,
     updateCurrentName: (String) -> Unit,
     updateCurrentAmount: (Int) -> Unit,
     updateCurrentBrand: (String) -> Unit,
@@ -124,9 +124,9 @@ fun CartScreen(
                             .fillMaxWidth()
                             .heightIn(max = 400.dp)
                     ) {
-                        val productNames = availableProducts.data.map { it.name }.distinct()
+                        val productNames = availableProducts.map { it.name }.distinct()
                         val filteredNames = if (currentBrand != "Brand") {
-                            availableProducts.data
+                            availableProducts
                                 .filter { it.brand == currentBrand }
                                 .map { it.name }
                         } else {
@@ -184,9 +184,9 @@ fun CartScreen(
                                 .fillMaxWidth()
                                 .heightIn(max = 400.dp)
                         ) {
-                            val productBrands = availableProducts.data.map { it.brand }.distinct()
+                            val productBrands = availableProducts.map { it.brand }.distinct()
                             val filteredBrands = if (currentName != "Name") {
-                                availableProducts.data
+                                availableProducts
                                     .filter { it.name == currentName }
                                     .map { it.brand }
                             } else {
@@ -352,7 +352,7 @@ fun CartScreenPreview() {
                 CartProduct(null,"Milanesa", 2, "200"),
                 CartProduct(null,"Milanesa", 2, "200"),
             ))),
-            ProductResponse(emptyList()),
+            emptyList(),
             {name ->},
             {amount ->},
             {brand ->},

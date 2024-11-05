@@ -1,5 +1,6 @@
 package com.example.pricerecommender.data.model
 
+import com.example.pricerecommender.data.model.app.Product
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

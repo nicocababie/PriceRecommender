@@ -64,7 +64,7 @@ class ProductViewModel @Inject constructor(
         }
     }
 
-    private fun getProducts() {
+    fun getProducts() {
         viewModelScope.launch {
             try {
                 _uiState.update { currentState ->

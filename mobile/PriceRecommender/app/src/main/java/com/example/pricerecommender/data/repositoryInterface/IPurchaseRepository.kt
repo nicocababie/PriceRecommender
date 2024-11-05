@@ -1,6 +1,6 @@
 package com.example.pricerecommender.data.repositoryInterface
 
-import com.example.pricerecommender.data.model.Product
+import com.example.pricerecommender.data.model.app.Product
 import com.example.pricerecommender.data.model.PurchaseReport
 import com.google.android.gms.maps.model.LatLng
 

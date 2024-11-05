@@ -1,6 +1,6 @@
 package com.example.pricerecommender.data.repositoryInterface
 
-import com.example.pricerecommender.data.model.CartProduct
+import com.example.pricerecommender.data.model.app.CartProduct
 
 interface ICartRepository {
     suspend fun add(

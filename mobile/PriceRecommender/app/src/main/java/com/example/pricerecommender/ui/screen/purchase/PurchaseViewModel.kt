@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pricerecommender.data.model.Product
+import com.example.pricerecommender.data.model.app.Product
 import com.example.pricerecommender.data.model.Purchase
 import com.example.pricerecommender.data.repositoryInterface.IDepartmentRepository
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository

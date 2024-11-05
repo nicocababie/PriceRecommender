@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.pricerecommender.data.model.PurchaseData
+import com.example.pricerecommender.data.model.app.PurchaseData
 import com.example.pricerecommender.data.model.app.Product
 import com.example.pricerecommender.ui.ApiUIState
 import com.example.pricerecommender.ui.screen.api.ErrorScreen
@@ -62,7 +62,7 @@ fun PurchasesReportScreen(
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
-                items(uiState.report.data) { purchase ->
+                items(uiState.report) { purchase ->
                     PurchaseItem(
                         purchase,
                         onPurchaseClick = onPurchaseClick
@@ -125,7 +125,8 @@ fun PurchaseItem(
 @Composable
 fun PurchaseItemPreview() {
     PriceRecommenderTheme {
-        PurchaseItem(PurchaseData(
+        PurchaseItem(
+            PurchaseData(
             storeName = "Tienda Inglesa",
             storeAddress = "Montevideo Shopping",
             date = "27/10/2024",

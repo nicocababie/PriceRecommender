@@ -1,6 +1,6 @@
 package com.example.pricerecommender.ui.screen.home
 
-import com.example.pricerecommender.data.model.AddressDetail
+import com.example.pricerecommender.data.model.app.AddressDetail
 import com.example.pricerecommender.ui.ApiUIState
 
 data class HomeUIState(

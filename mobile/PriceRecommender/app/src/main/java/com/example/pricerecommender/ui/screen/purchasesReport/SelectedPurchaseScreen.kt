@@ -21,7 +21,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pricerecommender.data.model.app.Product
-import com.example.pricerecommender.data.model.PurchaseData
+import com.example.pricerecommender.data.model.app.PurchaseData
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
@@ -88,7 +88,8 @@ fun SelectedPurchaseScreen(purchase: PurchaseData) {
 @Composable
 fun SelectedPurchaseScreenPreview() {
     PriceRecommenderTheme {
-        SelectedPurchaseScreen(PurchaseData(
+        SelectedPurchaseScreen(
+            PurchaseData(
             storeName = "Tienda Inglesa",
             storeAddress = "Montevideo Shopping",
             date = "27/10/2024",
@@ -108,6 +109,7 @@ fun SelectedPurchaseScreenPreview() {
                     store = ""
                 )
             )
-        ))
+        )
+        )
     }
 }

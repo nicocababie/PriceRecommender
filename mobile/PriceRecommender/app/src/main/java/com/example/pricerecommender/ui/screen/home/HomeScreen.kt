@@ -50,7 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pricerecommender.R
-import com.example.pricerecommender.data.model.AddressDetail
+import com.example.pricerecommender.data.model.app.AddressDetail
 import com.example.pricerecommender.ui.ApiUIState
 import com.example.pricerecommender.ui.screen.api.ErrorScreen
 import com.example.pricerecommender.ui.screen.api.LoadingScreen

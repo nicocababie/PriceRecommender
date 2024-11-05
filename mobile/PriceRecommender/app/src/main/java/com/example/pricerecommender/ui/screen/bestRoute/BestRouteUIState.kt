@@ -1,6 +1,6 @@
 package com.example.pricerecommender.ui.screen.bestRoute
 
-import com.example.pricerecommender.data.model.MarkerDetail
+import com.example.pricerecommender.data.model.app.MarkerDetail
 import com.example.pricerecommender.ui.ApiUIState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng

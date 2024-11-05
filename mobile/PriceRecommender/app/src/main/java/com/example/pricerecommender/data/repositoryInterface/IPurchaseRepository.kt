@@ -1,7 +1,7 @@
 package com.example.pricerecommender.data.repositoryInterface
 
+import com.example.pricerecommender.data.model.app.PurchaseData
 import com.example.pricerecommender.data.model.app.Product
-import com.example.pricerecommender.data.model.PurchaseReport
 import com.google.android.gms.maps.model.LatLng
 
 interface IPurchaseRepository {
@@ -13,5 +13,5 @@ interface IPurchaseRepository {
         coord: LatLng
     )
 
-    suspend fun getReport(userId: String): PurchaseReport
+    suspend fun getReport(userId: String): List<PurchaseData>
 }

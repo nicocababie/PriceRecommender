@@ -1,19 +1,18 @@
-package com.example.pricerecommender.data.model
+package com.example.pricerecommender.data.model.service
 
-import com.example.pricerecommender.data.model.app.Product
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PurchaseReport(
+data class PurchaseReportDto(
     @SerialName("message") val message: String,
-    @SerialName("data") val data: List<PurchaseData>
+    @SerialName("data") val data: List<PurchaseDataDto>
 )
 
 @Serializable
-data class PurchaseData(
+data class PurchaseDataDto(
     @SerialName("storeName") val storeName: String,
     @SerialName("storeAddress") val storeAddress: String,
-    @SerialName("listProducts") val products: List<Product>,
+    @SerialName("listProducts") val products: List<ProductDto>,
     @SerialName("date") val date: String
 )

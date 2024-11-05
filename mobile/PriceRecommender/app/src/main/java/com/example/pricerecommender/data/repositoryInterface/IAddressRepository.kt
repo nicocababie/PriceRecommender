@@ -1,7 +1,7 @@
 package com.example.pricerecommender.data.repositoryInterface
 
 import com.example.pricerecommender.data.database.entity.Address
-import com.example.pricerecommender.data.model.AddressDetail
+import com.example.pricerecommender.data.model.app.AddressDetail
 
 
 interface IAddressRepository {

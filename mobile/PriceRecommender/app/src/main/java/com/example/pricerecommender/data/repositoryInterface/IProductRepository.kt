@@ -1,6 +1,6 @@
 package com.example.pricerecommender.data.repositoryInterface
 
-import com.example.pricerecommender.data.model.BestResult
+import com.example.pricerecommender.data.model.app.BestResult
 import com.example.pricerecommender.data.model.app.Product
 
 interface IProductRepository {

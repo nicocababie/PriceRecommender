@@ -1,6 +1,6 @@
 package com.example.pricerecommender.ui.screen.purchase
 
-import com.example.pricerecommender.data.model.Purchase
+import com.example.pricerecommender.data.model.app.Purchase
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 

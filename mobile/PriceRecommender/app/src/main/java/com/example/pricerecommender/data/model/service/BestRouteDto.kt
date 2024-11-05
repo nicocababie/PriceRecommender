@@ -1,16 +1,16 @@
-package com.example.pricerecommender.data.model
+package com.example.pricerecommender.data.model.service
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BestRouteResponse(
+data class BestRouteDto(
     @SerialName("message") val message: String,
-    @SerialName("data") val data: List<BestResult>
+    @SerialName("data") val data: List<BestResultDto>
 )
 
 @Serializable
-data class BestResult(
+data class BestResultDto(
     @SerialName("storeName") val storeName: String,
     @SerialName("storeLatitude") val storeLat: Double,
     @SerialName("storeLongitude") val storeLng: Double,

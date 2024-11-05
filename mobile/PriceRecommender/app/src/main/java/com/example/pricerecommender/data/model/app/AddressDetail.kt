@@ -1,4 +1,4 @@
-package com.example.pricerecommender.data.model
+package com.example.pricerecommender.data.model.app
 
 data class AddressDetail(
     val address: String,

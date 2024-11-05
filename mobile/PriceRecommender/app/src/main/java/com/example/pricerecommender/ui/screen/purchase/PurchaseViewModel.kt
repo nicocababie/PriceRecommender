@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pricerecommender.data.model.app.Product
-import com.example.pricerecommender.data.model.Purchase
+import com.example.pricerecommender.data.model.app.Purchase
 import com.example.pricerecommender.data.repositoryInterface.IDepartmentRepository
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository
 import com.google.android.gms.maps.model.CameraPosition

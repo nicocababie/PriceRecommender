@@ -2,7 +2,7 @@ package com.example.pricerecommender.ui.screen.bestRoute
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pricerecommender.data.model.MarkerDetail
+import com.example.pricerecommender.data.model.app.MarkerDetail
 import com.example.pricerecommender.data.repositoryInterface.IProductRepository
 import com.example.pricerecommender.ui.ApiUIState
 import com.google.android.gms.maps.model.CameraPosition

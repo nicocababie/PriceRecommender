@@ -2,7 +2,7 @@ package com.example.pricerecommender.ui.screen.purchasesReport
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pricerecommender.data.model.PurchaseData
+import com.example.pricerecommender.data.model.app.PurchaseData
 import com.example.pricerecommender.data.repository.PreferencesRepository
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository
 import com.example.pricerecommender.ui.ApiUIState

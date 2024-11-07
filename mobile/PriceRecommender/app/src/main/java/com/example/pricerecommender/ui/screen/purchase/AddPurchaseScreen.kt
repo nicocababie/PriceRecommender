@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,11 +17,13 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +44,7 @@ fun AddPurchaseScreen(
     onSelectStoreAddressClick: () -> Unit,
     onSelectProductsClick: () -> Unit,
     onAddPurchaseClick: (String, String, String, List<Product>, LatLng, Context) -> Unit,
+    onCameraClick: () -> Unit
 ) {
     val context = LocalContext.current
     val storeName = purchaseState.purchase.name
@@ -107,6 +112,27 @@ fun AddPurchaseScreen(
             },
             enabled = enabled
         )
+        Spacer(modifier = Modifier.padding(8.dp))
+        OutlinedButton(
+            onClick = onCameraClick,
+            shape = RoundedCornerShape(4.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .height(56.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.receipt_capture),
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    painter = painterResource(R.drawable.camera),
+                    contentDescription = stringResource(R.string.receipt_capture)
+                )
+            }
+        }
     }
 }
 
@@ -162,7 +188,8 @@ fun AddPurchaseScreenPreview() {
             {},
             {},
             {},
-            { userId, storeName, storeAddress, products, coord, context ->}
+            { userId, storeName, storeAddress, products, coord, context ->},
+            {}
         )
     }
 }

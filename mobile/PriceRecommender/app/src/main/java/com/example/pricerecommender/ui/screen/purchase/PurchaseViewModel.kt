@@ -1,6 +1,7 @@
 package com.example.pricerecommender.ui.screen.purchase
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -138,6 +139,22 @@ class PurchaseViewModel @Inject constructor(
                     }
                 )
             }
+        }
+    }
+
+    fun updateImageUri(uri: Uri) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                imageUri = uri
+            )
+        }
+    }
+
+    fun clearImageUri() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                imageUri = Uri.EMPTY
+            )
         }
     }
 }

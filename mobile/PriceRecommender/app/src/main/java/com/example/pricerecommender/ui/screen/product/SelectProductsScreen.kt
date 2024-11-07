@@ -25,7 +25,7 @@ fun SelectProductsScreen(
     updateCurrentPrice: (Double) -> Unit,
     updateCurrentBrand: (String) -> Unit,
     onAddProductClick: (String, Int, Double, String) -> Unit,
-    onReturnToPurchaseClick: () -> Unit
+    onReturnToPurchaseClick: () -> Unit,
 ) {
     val currentName = productState.currentName
     val currentAmount = productState.currentAmount
@@ -73,7 +73,8 @@ fun SelectProductsScreen(
             )
         }
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ){
             CustomOutlinedButton(
                 text = stringResource(R.string.add_product),

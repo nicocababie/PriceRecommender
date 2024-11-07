@@ -96,6 +96,9 @@ dependencies {
     //Kotlin serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

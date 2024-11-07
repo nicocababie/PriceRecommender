@@ -42,4 +42,8 @@
     <string name="selected_purchase_screen">Purchase details</string>
     <string name="server_error">Server Error</string>
     <string name="click_to_see_more_details">Click to see more details</string>
+    <string name="receipt_capture_screen">Receipt capture</string>
+    <string name="receipt_capture">Receipt capture</string>
+    <string name="capture">Capture</string>
+    <string name="confirm">Confirm</string>
 </resources>

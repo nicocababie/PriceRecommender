@@ -38,6 +38,7 @@ import com.example.pricerecommender.ui.screen.cart.CartViewModel
 import com.example.pricerecommender.ui.screen.home.HomeScreen
 import com.example.pricerecommender.ui.screen.home.HomeViewModel
 import com.example.pricerecommender.ui.screen.product.ProductViewModel
+import com.example.pricerecommender.ui.screen.product.ReceiptCaptureScreen
 import com.example.pricerecommender.ui.screen.product.SelectProductsScreen
 import com.example.pricerecommender.ui.screen.purchase.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.purchase.PurchaseViewModel
@@ -143,7 +144,8 @@ fun PriceRecommenderApp(
                     onAddPurchaseClick = { userId, storeName, storeAddress, products, coord, context ->
                         purchaseViewModel.addPurchase(userId, storeName, storeAddress, products, coord, context)
                         navController.popBackStack()
-                    }
+                    },
+                    onCameraClick = { navController.navigate(PriceRecommenderScreen.ReceiptCaptureScreen.name) }
                 )
             }
 
@@ -256,6 +258,15 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.LoadingScreen.name) {
                 LoadingScreen()
+            }
+
+            composable(route = PriceRecommenderScreen.ReceiptCaptureScreen.name) {
+                ReceiptCaptureScreen(
+                    imageUri = purchaseState.imageUri,
+                    updateImageUri = { purchaseViewModel.updateImageUri(it) },
+                    deleteButton = { purchaseViewModel.clearImageUri() },
+                    confirmButton = { navController.popBackStack() }
+                )
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.example.pricerecommender.data.repositoryInterface
 
-import com.example.pricerecommender.data.model.app.PurchaseData
+import android.content.Context
+import android.net.Uri
 import com.example.pricerecommender.data.model.app.Product
+import com.example.pricerecommender.data.model.app.PurchaseData
 import com.google.android.gms.maps.model.LatLng
 
 interface IPurchaseRepository {
@@ -14,4 +16,12 @@ interface IPurchaseRepository {
     )
 
     suspend fun getReport(userId: String): List<PurchaseData>
+
+    suspend fun addReceipt(
+        imageUri: Uri,
+        storeLat: Double,
+        storeLng: Double,
+        userId: String,
+        context: Context
+    )
 }

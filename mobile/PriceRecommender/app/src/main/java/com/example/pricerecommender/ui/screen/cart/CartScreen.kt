@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -219,7 +220,8 @@ fun CartScreen(
                         )
                         CustomOutlinedButton(
                             text = stringResource(R.string.clear_selection),
-                            onClick = emptyState
+                            onClick = emptyState,
+                            icon = Icons.Default.Clear
                         )
                         CustomOutlinedButton(
                             text = stringResource(R.string.add_to_cart),
@@ -231,7 +233,8 @@ fun CartScreen(
                                     currentBrand,
                                     context
                                 )
-                            }
+                            },
+                            icon = Icons.Default.Add
                         )
                         CartList(
                             cart = cart,

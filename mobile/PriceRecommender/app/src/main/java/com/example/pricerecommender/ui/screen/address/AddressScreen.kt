@@ -14,7 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
@@ -158,6 +161,7 @@ fun AddressManualEntryScreen(
                             }
                         }
                     },
+                    icon = Icons.Default.Search,
                     modifier = Modifier.weight(1f)
                 )
                 CustomOutlinedButton(
@@ -166,6 +170,7 @@ fun AddressManualEntryScreen(
                         onCancelClick()
                         emptyState()
                     },
+                    icon = Icons.Default.Clear,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -205,6 +210,7 @@ fun AddressManualEntryScreen(
                     )
                     emptyState()
                 },
+                icon = Icons.Default.Check,
                 modifier = Modifier.height(48.dp)
             )
         }

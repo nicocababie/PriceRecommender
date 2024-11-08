@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,11 +89,13 @@ fun SelectProductsScreen(
                         currentBrand
                     )
                 },
-                enabled = enabled
+                enabled = enabled,
+                icon = Icons.Default.Add
             )
             CustomOutlinedButton(
                 text = stringResource(R.string.return_to_purchase),
-                onClick = onReturnToPurchaseClick
+                onClick = onReturnToPurchaseClick,
+                icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft
             )
         }
     }

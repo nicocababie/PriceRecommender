@@ -157,4 +157,36 @@ class PurchaseViewModel @Inject constructor(
             )
         }
     }
+
+    fun submitReceipt(
+        imageUri: Uri,
+        storeLat: Double,
+        storeLng: Double,
+        userId: String,
+        context: Context
+    ) {
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                purchaseRepository.addReceipt(
+                    imageUri,
+                    storeLat,
+                    storeLng,
+                    userId,
+                    context
+                )
+            }
+            Toast.makeText(
+                context,
+                "Receipt added successfully",
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+            Toast.makeText(
+                context,
+                "Server Error: Error while adding receipt",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
 }

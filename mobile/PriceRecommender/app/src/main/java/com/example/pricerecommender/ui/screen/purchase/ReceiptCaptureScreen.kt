@@ -1,4 +1,4 @@
-package com.example.pricerecommender.ui.screen.product
+package com.example.pricerecommender.ui.screen.purchase
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -49,10 +49,13 @@ import java.util.Objects
 
 @Composable
 fun ReceiptCaptureScreen(
+    userId: String,
+    storeLat: Double,
+    storeLng: Double,
     imageUri: Uri,
     updateImageUri: (Uri) -> Unit,
     deleteButton: () -> Unit,
-    confirmButton: () -> Unit
+    confirmButton: (Uri, Double, Double, String, Context) -> Unit
 ) {
     val context = LocalContext.current
     val file = context.createImageFile()
@@ -119,7 +122,9 @@ fun ReceiptCaptureScreen(
             }
             if (imageUri != Uri.EMPTY) {
                 RoundedButton(
-                    onClick = confirmButton,
+                    onClick = {
+                        confirmButton(imageUri, storeLat, storeLng, userId, context)
+                    },
                     icon = Icons.Default.Check,
                     contentDescription = stringResource(R.string.confirm)
                 )

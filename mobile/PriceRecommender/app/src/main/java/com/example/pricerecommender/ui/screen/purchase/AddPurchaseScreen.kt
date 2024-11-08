@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +13,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,7 +73,8 @@ fun AddPurchaseScreen(
             if (storeAddress == ""){
                 CustomOutlinedButton(
                     text = stringResource(R.string.select_store_address),
-                    onClick = onSelectStoreAddressClick
+                    onClick = onSelectStoreAddressClick,
+                    icon = Icons.Default.Place
                 )
             } else {
                 Row(
@@ -92,9 +95,30 @@ fun AddPurchaseScreen(
                     }
                 }
             }
+            OutlinedButton(
+                onClick = onCameraClick,
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(56.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.receipt_capture),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.camera),
+                        contentDescription = stringResource(R.string.receipt_capture)
+                    )
+                }
+            }
             CustomOutlinedButton(
                 text = stringResource(R.string.select_products),
-                onClick = onSelectProductsClick
+                onClick = onSelectProductsClick,
+                icon = Icons.Default.Menu
             )
         }
         Checkout(products, Modifier.weight(0.5f))
@@ -110,29 +134,9 @@ fun AddPurchaseScreen(
                     context
                 )
             },
-            enabled = enabled
+            enabled = enabled,
+            icon = Icons.Default.Add
         )
-        Spacer(modifier = Modifier.padding(8.dp))
-        OutlinedButton(
-            onClick = onCameraClick,
-            shape = RoundedCornerShape(4.dp),
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .height(56.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.receipt_capture),
-                    modifier = Modifier.weight(1f)
-                )
-                Icon(
-                    painter = painterResource(R.drawable.camera),
-                    contentDescription = stringResource(R.string.receipt_capture)
-                )
-            }
-        }
     }
 }
 

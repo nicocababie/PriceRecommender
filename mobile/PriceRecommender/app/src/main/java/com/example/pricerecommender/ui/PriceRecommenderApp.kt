@@ -38,10 +38,10 @@ import com.example.pricerecommender.ui.screen.cart.CartViewModel
 import com.example.pricerecommender.ui.screen.home.HomeScreen
 import com.example.pricerecommender.ui.screen.home.HomeViewModel
 import com.example.pricerecommender.ui.screen.product.ProductViewModel
-import com.example.pricerecommender.ui.screen.product.ReceiptCaptureScreen
 import com.example.pricerecommender.ui.screen.product.SelectProductsScreen
 import com.example.pricerecommender.ui.screen.purchase.AddPurchaseScreen
 import com.example.pricerecommender.ui.screen.purchase.PurchaseViewModel
+import com.example.pricerecommender.ui.screen.purchase.ReceiptCaptureScreen
 import com.example.pricerecommender.ui.screen.purchasesReport.PurchaseReportViewModel
 import com.example.pricerecommender.ui.screen.purchasesReport.PurchasesReportScreen
 import com.example.pricerecommender.ui.screen.purchasesReport.SelectedPurchaseScreen
@@ -262,10 +262,17 @@ fun PriceRecommenderApp(
 
             composable(route = PriceRecommenderScreen.ReceiptCaptureScreen.name) {
                 ReceiptCaptureScreen(
+                    userId = homeState.userId,
+                    storeLat = purchaseState.storeCoord.latitude,
+                    storeLng = purchaseState.storeCoord.longitude,
                     imageUri = purchaseState.imageUri,
                     updateImageUri = { purchaseViewModel.updateImageUri(it) },
                     deleteButton = { purchaseViewModel.clearImageUri() },
-                    confirmButton = { navController.popBackStack() }
+                    confirmButton = { img, lat, lng, id, context ->
+                        purchaseViewModel.submitReceipt(img, lat, lng, id, context)
+                        purchaseViewModel.clearImageUri()
+                        navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)
+                    }
                 )
             }
         }

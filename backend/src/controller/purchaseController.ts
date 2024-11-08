@@ -169,10 +169,13 @@ export class purchaseController {
                 userId: userId,
                 date: new Date()
             }
+
+            fs.unlinkSync("/app/data/pictures/"+receiptName);
             console.log(purchase);
         let result = await this._purchaseService.createPurchase(purchase);
-            return res.status(201).json({ message: "Purchase created successfully" });
+            return res.status(201).json({ message: "Purchase created successfully" , product: purchase});
         }
+
     }catch(error){
         return res.status(500).json({"message": "Error creating purchase", "error": error.message});
     }

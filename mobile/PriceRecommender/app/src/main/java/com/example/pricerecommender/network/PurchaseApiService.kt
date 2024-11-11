@@ -1,6 +1,7 @@
 package com.example.pricerecommender.network
 
 import com.example.pricerecommender.data.model.service.DetailedPurchaseDto
+import com.example.pricerecommender.data.model.service.PurchaseReceiptDto
 import com.example.pricerecommender.data.model.service.PurchaseReportDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -25,5 +26,5 @@ interface PurchaseApiService {
         @Part("storeLatitude") storeLatitude: RequestBody,
         @Part("storeLongitude") storeLongitude: RequestBody,
         @Part("userId") userId: RequestBody
-    )
+    ): PurchaseReceiptDto
 }

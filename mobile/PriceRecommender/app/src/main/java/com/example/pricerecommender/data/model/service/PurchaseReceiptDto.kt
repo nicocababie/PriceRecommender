@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PurchaseReportDto(
+class PurchaseReceiptDto(
     @SerialName("message") val message: String,
-    @SerialName("data") val data: List<PurchaseDataDto>
+    @SerialName("product") val data: PurchaseDataDto
 )

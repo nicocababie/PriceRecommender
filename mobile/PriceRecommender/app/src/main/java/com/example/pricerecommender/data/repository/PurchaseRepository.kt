@@ -57,7 +57,7 @@ class PurchaseRepository @Inject constructor(
         storeLng: Double,
         userId: String,
         context: Context
-    ) {
+    ): List<Product> {
         val file = uriToFile(context, imageUri) ?: throw IOException("File not found")
 
         val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
@@ -67,12 +67,16 @@ class PurchaseRepository @Inject constructor(
         val storeLngBody = storeLng.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         val userIdBody = userId.toRequestBody("text/plain".toMediaTypeOrNull())
 
-        purchaseApiService.addReceipt(
+        val result = purchaseApiService.addReceipt(
             img = imagePart,
             storeLatitude = storeLatBody,
             storeLongitude = storeLngBody,
             userId = userIdBody
         )
+
+        return result.data.products.map {
+            Product(it.name, it.amount, it.price, it.brand, it.store)
+        }
     }
 
     private fun uriToFile(context: Context, uri: Uri): File? {

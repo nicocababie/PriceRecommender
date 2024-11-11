@@ -41,7 +41,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pricerecommender.R
-import com.example.pricerecommender.services.geocodeLocation
+import com.example.pricerecommender.network.geocodeLocation
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 import com.google.android.gms.maps.model.CameraPosition

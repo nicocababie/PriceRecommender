@@ -75,11 +75,13 @@ fun PriceRecommenderApp(
 
     Scaffold(
         topBar = {
-            PriceRecommenderTopAppBar(
-                canNavigateBack = canNavigateBack,
-                currentScreen = currentScreen,
-                navigateUp = { navController.navigateUp() }
-            )
+            if (purchaseState.apiState != ApiUIState.Loading){
+                PriceRecommenderTopAppBar(
+                    canNavigateBack = canNavigateBack,
+                    currentScreen = currentScreen,
+                    navigateUp = { navController.navigateUp() }
+                )
+            }
         }
     ) { innerPadding -> NavHost(
             navController = navController,
@@ -145,7 +147,11 @@ fun PriceRecommenderApp(
                         purchaseViewModel.addPurchase(userId, storeName, storeAddress, products, coord, context)
                         navController.popBackStack()
                     },
-                    onCameraClick = { navController.navigate(PriceRecommenderScreen.ReceiptCaptureScreen.name) }
+                    onCameraClick = { navController.navigate(PriceRecommenderScreen.ReceiptCaptureScreen.name) },
+                    onRetry = {
+                        navController.popBackStack()
+                        navController.navigate(PriceRecommenderScreen.ReceiptCaptureScreen.name)
+                    }
                 )
             }
 
@@ -271,7 +277,7 @@ fun PriceRecommenderApp(
                     confirmButton = { img, lat, lng, id, context ->
                         purchaseViewModel.submitReceipt(img, lat, lng, id, context)
                         purchaseViewModel.clearImageUri()
-                        navController.popBackStack(PriceRecommenderScreen.HomeScreen.name, false)
+                        navController.popBackStack()
                     }
                 )
             }

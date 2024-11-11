@@ -9,6 +9,7 @@ import com.example.pricerecommender.data.model.app.Product
 import com.example.pricerecommender.data.model.app.Purchase
 import com.example.pricerecommender.data.repositoryInterface.IDepartmentRepository
 import com.example.pricerecommender.data.repositoryInterface.IPurchaseRepository
+import com.example.pricerecommender.ui.ApiUIState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -165,28 +167,42 @@ class PurchaseViewModel @Inject constructor(
         userId: String,
         context: Context
     ) {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
-                purchaseRepository.addReceipt(
+        _uiState.update { currentState ->
+            currentState.copy(apiState = ApiUIState.Loading)
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = purchaseRepository.addReceipt(
                     imageUri,
                     storeLat,
                     storeLng,
                     userId,
                     context
                 )
+                _uiState.update { currentState ->
+                    currentState.copy(apiState = ApiUIState.Success(result.size))
+                }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        "${result.size} product/s added successfully",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } catch (e: Exception) {
+                _uiState.update { currentState ->
+                    currentState.copy(apiState = ApiUIState.Error(e))
+                }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        "Server Error: Error while adding receipt",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
-            Toast.makeText(
-                context,
-                "Receipt added successfully",
-                Toast.LENGTH_SHORT
-            ).show()
-        } catch (e: Exception) {
-            Toast.makeText(
-                context,
-                "Server Error: Error while adding receipt",
-                Toast.LENGTH_LONG
-            ).show()
         }
     }
+
 
 }

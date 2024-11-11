@@ -23,5 +23,5 @@ interface IPurchaseRepository {
         storeLng: Double,
         userId: String,
         context: Context
-    )
+    ): List<Product>
 }

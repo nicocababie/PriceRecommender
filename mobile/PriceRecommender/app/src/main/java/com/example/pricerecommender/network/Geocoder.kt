@@ -1,4 +1,4 @@
-package com.example.pricerecommender.services
+package com.example.pricerecommender.network
 
 import android.content.Context
 import android.location.Geocoder

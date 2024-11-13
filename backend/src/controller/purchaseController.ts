@@ -116,7 +116,7 @@ export class purchaseController {
             });
         }
     }
-    createPurchaseWithPicture = async (req: Request, res: Response) => {
+    scanReceipt = async (req: Request, res: Response) => {
         let images = [];
         let storeLatitude = req.body.storeLatitude;
         let storeLongitude = req.body.storeLongitude;
@@ -171,9 +171,8 @@ export class purchaseController {
             }
 
             fs.unlinkSync("/app/data/pictures/"+receiptName);
-            console.log(purchase);
-        let result = await this._purchaseService.createPurchase(purchase);
-            return res.status(201).json({ message: "Purchase created successfully" , product: purchase});
+
+            return res.status(201).json({ message: "Receipt scanned successfully" , product: purchase});
         }
 
     }catch(error){

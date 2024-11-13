@@ -76,7 +76,7 @@ app.get('/products', async (req, res) => {await _purchaseController.getProducts(
 
 app.get('/users', async (req, res) => {await _userController.createUser(req, res)});
 
-app.post('/purchasesPictures', upload.array('img'), async (req, res) => {await _purchaseController.createPurchaseWithPicture(req, res)});
+app.post('/purchasesPictures', upload.array('img'), async (req, res) => {await _purchaseController.scanReceipt(req, res)});
 
 app.get('/stats/:id', async (req, res) => { await _purchaseController.getLastPurchases(req, res) });
 

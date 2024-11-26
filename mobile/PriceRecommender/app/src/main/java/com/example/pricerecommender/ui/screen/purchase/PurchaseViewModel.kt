@@ -144,6 +144,37 @@ class PurchaseViewModel @Inject constructor(
         }
     }
 
+    fun updateSelectedProduct(product: Product) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedProduct = product
+            )
+        }
+    }
+
+    fun clearSelectedProduct() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedProduct = Product("", 0, 0.0, "", "")
+            )
+        }
+    }
+
+    fun updateReceipt(
+        oldProduct: Product,
+        name: String, amount: Int, price: Double, brand: String,
+    ) {
+        _uiState.update { currentState ->
+            val updatedProduct = Product(name, amount, price, brand, oldProduct.store)
+            val updatedReceipt = currentState.receipt.map { product ->
+                if (product.name == oldProduct.name) updatedProduct else product
+            }
+            currentState.copy(
+                receipt = updatedReceipt
+            )
+        }
+    }
+
     fun updateImageUri(uri: Uri) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -180,12 +211,15 @@ class PurchaseViewModel @Inject constructor(
                     context
                 )
                 _uiState.update { currentState ->
-                    currentState.copy(apiState = ApiUIState.Success(result.size))
+                    currentState.copy(
+                        apiState = ApiUIState.Success(result.size),
+                        receipt = result
+                    )
                 }
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         context,
-                        "${result.size} product/s added successfully",
+                        "${result.size} product/s loaded successfully",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -196,13 +230,11 @@ class PurchaseViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         context,
-                        "Server Error: Error while adding receipt",
+                        "Server Error: Error while loading receipt products",
                         Toast.LENGTH_LONG
                     ).show()
                 }
             }
         }
     }
-
-
 }

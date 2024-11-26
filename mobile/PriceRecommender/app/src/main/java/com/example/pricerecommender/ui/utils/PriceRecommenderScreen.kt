@@ -17,5 +17,6 @@ enum class PriceRecommenderScreen(
     LoadingScreen(R.string.loading_screen),
     StoreAddressScreen(R.string.store_address),
     SelectedPurchaseScreen(R.string.selected_purchase_screen),
-    ReceiptCaptureScreen(R.string.receipt_capture_screen)
+    ReceiptCaptureScreen(R.string.receipt_capture_screen),
+    ModifyReceiptScreen(R.string.modify_receipt)
 }

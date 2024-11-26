@@ -18,11 +18,13 @@ import com.example.pricerecommender.ui.screen.components.Counter
 import com.example.pricerecommender.ui.screen.components.CustomOutlinedButton
 import com.example.pricerecommender.ui.screen.components.NumberInput
 import com.example.pricerecommender.ui.screen.components.TextInput
+import com.example.pricerecommender.ui.screen.purchase.PurchaseUIState
 import com.example.pricerecommender.ui.theme.PriceRecommenderTheme
 
 @Composable
 fun SelectProductsScreen(
     productState: ProductUIState,
+    purchaseState: PurchaseUIState,
     updateCurrentName: (String) -> Unit,
     updateCurrentAmount: (Int) -> Unit,
     updateCurrentPrice: (Double) -> Unit,
@@ -107,6 +109,7 @@ fun SelectProductsScreenPreview() {
     PriceRecommenderTheme {
         SelectProductsScreen(
             ProductUIState(),
+            PurchaseUIState(),
             {},
             {},
             {},

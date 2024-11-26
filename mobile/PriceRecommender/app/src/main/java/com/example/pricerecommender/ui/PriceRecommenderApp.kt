@@ -40,6 +40,7 @@ import com.example.pricerecommender.ui.screen.home.HomeViewModel
 import com.example.pricerecommender.ui.screen.product.ProductViewModel
 import com.example.pricerecommender.ui.screen.product.SelectProductsScreen
 import com.example.pricerecommender.ui.screen.purchase.AddPurchaseScreen
+import com.example.pricerecommender.ui.screen.purchase.ModifyReceiptScreen
 import com.example.pricerecommender.ui.screen.purchase.PurchaseViewModel
 import com.example.pricerecommender.ui.screen.purchase.ReceiptCaptureScreen
 import com.example.pricerecommender.ui.screen.purchasesReport.PurchaseReportViewModel
@@ -180,13 +181,26 @@ fun PriceRecommenderApp(
             composable(route = PriceRecommenderScreen.SelectProductsScreen.name) {
                 SelectProductsScreen(
                     productState = productState,
+                    purchaseState = purchaseState,
                     updateCurrentName = { productViewModel.updateCurrentName(it) },
                     updateCurrentAmount = { productViewModel.updateCurrentAmount(it) },
                     updateCurrentPrice = { productViewModel.updateCurrentPrice(it) },
                     updateCurrentBrand = { productViewModel.updateCurrentBrand(it) },
                     onAddProductClick = { name, amount, price, brand ->
-                        purchaseViewModel.updateProductsList(name, amount, price, brand)
-                        productViewModel.emptyState()
+                        if (purchaseState.receipt.isEmpty()){
+                            purchaseViewModel.updateProductsList(name, amount, price, brand)
+                            productViewModel.emptyState()
+                        } else {
+                            purchaseViewModel.updateReceipt(
+                                oldProduct = purchaseState.selectedProduct,
+                                name = name,
+                                amount = amount,
+                                price = price,
+                                brand = brand
+                            )
+                            productViewModel.emptyState()
+                            purchaseViewModel.clearSelectedProduct()
+                        }
                         navController.popBackStack()
                     },
                     onReturnToPurchaseClick = { navController.popBackStack() }
@@ -277,6 +291,36 @@ fun PriceRecommenderApp(
                     confirmButton = { img, lat, lng, id, context ->
                         purchaseViewModel.submitReceipt(img, lat, lng, id, context)
                         purchaseViewModel.clearImageUri()
+                        navController.popBackStack()
+                        navController.navigate(PriceRecommenderScreen.ModifyReceiptScreen.name)
+                    }
+                )
+            }
+        
+            composable(route = PriceRecommenderScreen.ModifyReceiptScreen.name) {
+                ModifyReceiptScreen(
+                    userId = homeState.userId,
+                    purchaseState = purchaseState,
+                    onItemClick = {
+                        purchaseViewModel.updateSelectedProduct(it)
+                        productViewModel.updateCurrentName(it.name)
+                        productViewModel.updateCurrentPrice(it.price)
+                        productViewModel.updateCurrentBrand(it.brand)
+                        productViewModel.updateCurrentAmount(it.amount)
+                        navController.navigate(PriceRecommenderScreen.SelectProductsScreen.name)
+                                  },
+                    onAddPurchaseClick = {
+                        purchaseState.receipt.map {
+                            purchaseViewModel.updateProductsList(it.name, it.amount, it.price, it.brand)
+                        }
+                        navController.popBackStack(PriceRecommenderScreen.AddPurchaseScreen.name, false)
+                    },
+                    onRetry = {
+                        navController.popBackStack()
+                        navController.navigate(PriceRecommenderScreen.ReceiptCaptureScreen.name)
+                    },
+                    onReturn = {
+                        purchaseViewModel.clearSelectedProduct()
                         navController.popBackStack()
                     }
                 )

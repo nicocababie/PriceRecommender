@@ -11,6 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,7 +55,14 @@ class PurchaseReportViewModel @Inject constructor(
                 val report = purchaseRepository.getReport(userId)
                 _uiState.update { currentState ->
                     currentState.copy(
-                        report = purchaseRepository.getReport(userId),
+                        report = purchaseRepository.getReport(userId).map {
+                            PurchaseData(
+                                storeName = it.storeName,
+                                storeAddress = it.storeAddress,
+                                products = it.products,
+                                date = formatDateString(it.date)
+                            )
+                        },
                         apiState = ApiUIState.Success(report)
                     )
                 }
@@ -61,5 +72,15 @@ class PurchaseReportViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun formatDateString(isoDate: String): String {
+        val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        originalFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+        val desiredFormat = SimpleDateFormat("dd/MM/yy - HH:mm", Locale.getDefault())
+
+        val date: Date = originalFormat.parse(isoDate)
+        return desiredFormat.format(date)
     }
 }
